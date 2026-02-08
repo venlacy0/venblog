@@ -1,0 +1,49 @@
+{
+  "name": "venblog",
+  "version": "0.1.0",
+  "description": "轻量级静态博客 CLI —— Markdown 驱动，零框架，编辑杂志风格",
+  "type": "module",
+  "bin": {
+    "venblog": "./cli.mjs"
+  },
+  "files": [
+    "cli.mjs",
+    "lib/",
+    "scripts/",
+    "styles.css",
+    "main.js",
+    "post.js"
+  ],
+  "scripts": {
+    "build": "node cli.mjs build",
+    "serve": "node cli.mjs serve",
+    "new": "node cli.mjs new",
+    "clean": "node cli.mjs clean",
+    "list": "node cli.mjs list"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/venlacy/venblog.git"
+  },
+  "keywords": [
+    "blog",
+    "static-site",
+    "markdown",
+    "cli"
+  ],
+  "author": "Venlacy",
+  "license": "MIT",
+  "dependencies": {
+    "chokidar": "^5.0.0",
+    "commander": "^14.0.3",
+    "katex": "0.16.28",
+    "picocolors": "^1.1.1",
+    "rehype-katex": "7.0.1",
+    "rehype-stringify": "10.0.1",
+    "remark-gfm": "4.0.1",
+    "remark-math": "6.0.0",
+    "remark-parse": "11.0.0",
+    "remark-rehype": "11.1.2",
+    "unified": "11.0.5"
+  }
+}

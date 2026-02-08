@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Venlacy's Blog</title>
+    <meta
+      name="description"
+      content="Venlacy's Blog. Motion-driven editorial blog experience."
+    />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main>
+      <section class="hero" aria-label="首页">
+        <div class="hero__inner">
+          <p class="hero__issue">Issue 001</p>
+          <h1 class="hero__title">Venlacy's Blog</h1>
+          <hr class="hero__rule" />
+          <p class="hero__tagline">thoughts, craft &amp; code</p>
+        </div>
+        <div class="hero__scroll" aria-hidden="true">
+          <span class="hero__scroll-line"></span>
+        </div>
+      </section>
+
+      <section class="scene" aria-label="博客列表">
+        <div class="scene__sticky">
+          <svg
+            class="chain"
+            viewBox="0 0 1000 220"
+            preserveAspectRatio="none"
+            aria-hidden="true"
+          >
+            <path
+              id="chainPath"
+              class="chain__path"
+              d="M 0 110 L 1000 110"
+            />
+          </svg>
+
+          <div class="scene__track" id="sceneTrack">
+            <a class="scene-card" href="posts/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%9E%84%E5%BB%BA%E5%93%B2%E5%AD%A6.html" aria-label="打开博客文章：静态博客的构建哲学">
+              <div class="scene-card__num">01</div>
+              <div class="scene-card__title">静态博客的构建哲学</div>
+              <div class="scene-card__meta">2025.07.02</div>
+            </a>
+            <a class="scene-card" href="posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B.html" aria-label="打开博客文章：从零开始">
+              <div class="scene-card__num">02</div>
+              <div class="scene-card__title">从零开始</div>
+              <div class="scene-card__meta">2025.06.15</div>
+            </a>
+          </div>
+
+          <button class="scene__nav scene__nav--prev" aria-label="向左滚动">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+          <button class="scene__nav scene__nav--next" aria-label="向右滚动">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </button>
+        </div>
+      </section>
+
+      <section class="archive" aria-label="文章归档">
+        <h2 class="archive__heading">Archive</h2>
+        <div class="archive__grid">
+          <a class="archive-card" href="posts/%E9%9D%99%E6%80%81%E5%8D%9A%E5%AE%A2%E7%9A%84%E6%9E%84%E5%BB%BA%E5%93%B2%E5%AD%A6.html">
+            <div class="archive-card__tags"><span class="archive-card__tag">架构</span><span class="archive-card__tag">前端</span><span class="archive-card__tag">思考</span></div>
+            <h3 class="archive-card__title">静态博客的构建哲学</h3>
+            <div class="archive-card__footer">
+              <time class="archive-card__date">2025.07.02</time>
+              <span class="archive-card__arrow">&rarr;</span>
+            </div>
+          </a>
+          <a class="archive-card" href="posts/%E4%BB%8E%E9%9B%B6%E5%BC%80%E5%A7%8B.html">
+            <div class="archive-card__tags"><span class="archive-card__tag">Markdown</span><span class="archive-card__tag">入门</span></div>
+            <h3 class="archive-card__title">从零开始</h3>
+            <div class="archive-card__footer">
+              <time class="archive-card__date">2025.06.15</time>
+              <span class="archive-card__arrow">&rarr;</span>
+            </div>
+          </a>
+        </div>
+      </section>
+    </main>
+
+    <script src="main.js" defer></script>
+  </body>
+</html>

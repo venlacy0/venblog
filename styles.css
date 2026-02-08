@@ -1,0 +1,920 @@
+@import url("https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500;1,600&family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&display=swap");
+
+:root {
+  --bg: #f3f1ea;
+  --text: #17130f;
+  --muted: #6b6259;
+  --ink: #26211b;
+  --rule: rgba(38, 33, 27, 0.18);
+  --card: #15120f;
+  --cardText: #f4f0e6;
+  --accent: #c1542c;
+  --shadow: 0 18px 60px rgba(17, 14, 10, 0.18);
+  --shadowHover: 0 24px 80px rgba(17, 14, 10, 0.26);
+  --radius: 14px;
+
+  --z-base: 0;
+  --z-line: 10;
+  --z-card: 20;
+  --z-progress: 100;
+
+  --ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+::selection {
+  background: rgba(193, 84, 44, 0.16);
+  color: var(--text);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+  scroll-behavior: smooth;
+}
+
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: var(--text);
+  overflow-x: hidden;
+  font-family: "Libre Baskerville", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+main {
+  min-height: 100%;
+}
+
+/* ═══════════════════════════════════════
+   入场动画关键帧
+   ═══════════════════════════════════════ */
+
+@keyframes fadeSlideUp {
+  from {
+    opacity: 0;
+    transform: translateY(22px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes ruleExpand {
+  from {
+    opacity: 0;
+    transform: scaleX(0);
+  }
+  to {
+    opacity: 1;
+    transform: scaleX(1);
+  }
+}
+
+@keyframes scrollPulse {
+  0%, 100% {
+    opacity: 0.08;
+    transform: scaleY(0.5) translateY(-4px);
+  }
+  50% {
+    opacity: 0.35;
+    transform: scaleY(1) translateY(4px);
+  }
+}
+
+@keyframes progressGlow {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+/* ═══════════════════════════════════════
+   Hero / 封面
+   ═══════════════════════════════════════ */
+
+.hero {
+  height: 65vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero__inner {
+  text-align: center;
+  will-change: transform, opacity;
+}
+
+/* 错落入场动画 */
+.hero__issue,
+.hero__title,
+.hero__rule,
+.hero__tagline {
+  opacity: 0;
+  animation: fadeSlideUp 0.9s var(--ease-out) forwards;
+}
+
+.hero__issue {
+  margin: 0 0 20px;
+  font-size: 11px;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--muted);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  animation-delay: 0.1s;
+}
+
+.hero__title {
+  margin: 0;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-weight: 600;
+  letter-spacing: -0.03em;
+  font-size: clamp(48px, 7vw, 92px);
+  line-height: 1.02;
+  color: var(--text);
+  animation-delay: 0.28s;
+}
+
+.hero__rule {
+  width: 56px;
+  height: 1.5px;
+  border: 0;
+  background: var(--ink);
+  margin: 22px auto 18px;
+  animation: ruleExpand 0.7s var(--ease-out) 0.5s forwards;
+  opacity: 0;
+}
+
+.hero__tagline {
+  margin: 0;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(16px, 2vw, 22px);
+  color: var(--muted);
+  letter-spacing: 0.02em;
+  animation-delay: 0.65s;
+}
+
+/* 滚动提示 */
+.hero__scroll {
+  position: absolute;
+  bottom: 36px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s var(--ease-out) 1s forwards;
+  transition: opacity 0.4s var(--ease-smooth);
+}
+
+.hero__scroll-line {
+  display: block;
+  width: 1px;
+  height: 40px;
+  background: var(--ink);
+  animation: scrollPulse 2.4s ease-in-out infinite;
+}
+
+/* ═══════════════════════════════════════
+   Scene / 动效区
+   ═══════════════════════════════════════ */
+
+.scene {
+  height: 110vh;
+}
+
+.scene__sticky {
+  position: sticky;
+  top: 0;
+  height: 55vh;
+  overflow: hidden;
+  z-index: var(--z-base);
+}
+
+/* ═══════════════════════════════════════
+   Chain / 横线
+   ═══════════════════════════════════════ */
+
+.chain {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 54%;
+  transform: translate3d(0, -50%, 0);
+  height: clamp(140px, 24vh, 220px);
+  width: 100%;
+  z-index: var(--z-line);
+  pointer-events: none;
+}
+
+.chain__path {
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 2;
+  stroke-linecap: square;
+}
+
+/* ═══════════════════════════════════════
+   Scene Track / 横线博文卡片轨道
+   ═══════════════════════════════════════ */
+
+.scene__track {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  display: flex;
+  gap: 20px;
+  z-index: var(--z-card);
+  will-change: transform, opacity;
+  /* JS 控制 transform 和 opacity */
+  opacity: 0;
+}
+
+.scene__track.no-transition {
+  transition: none;
+}
+
+.scene-card {
+  flex-shrink: 0;
+  width: 280px;
+  padding: 22px 22px 18px;
+  border-radius: var(--radius);
+  background: var(--card);
+  color: var(--cardText);
+  text-decoration: none;
+  box-shadow: var(--shadow);
+  border: 1px solid rgba(244, 240, 230, 0.08);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  position: relative;
+  transition:
+    transform 320ms var(--ease-out),
+    box-shadow 320ms var(--ease-out),
+    border-color 320ms var(--ease-out);
+}
+
+/* 卡片顶部强调线 */
+.scene-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 22px;
+  right: 22px;
+  height: 2px;
+  background: var(--accent);
+  opacity: 0;
+  transform: scaleX(0);
+  transition: opacity 320ms var(--ease-out), transform 320ms var(--ease-out);
+}
+
+.scene-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadowHover);
+  border-color: rgba(244, 240, 230, 0.16);
+}
+
+.scene-card:hover::before {
+  opacity: 1;
+  transform: scaleX(1);
+}
+
+.scene-card:active {
+  transform: translateY(-3px);
+}
+
+.scene-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.scene-card__num {
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: rgba(244, 240, 230, 0.4);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+}
+
+.scene-card__title {
+  margin-top: 10px;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-size: clamp(20px, 2.8vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  line-height: 1.15;
+  flex: 1;
+}
+
+.scene-card__meta {
+  margin-top: 14px;
+  font-size: 11px;
+  letter-spacing: 0.06em;
+  color: rgba(244, 240, 230, 0.4);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.scene-card__meta::after {
+  content: "\2192";
+  font-size: 14px;
+  color: rgba(244, 240, 230, 0.25);
+  transition: color 320ms var(--ease-out), transform 320ms var(--ease-out);
+}
+
+.scene-card:hover .scene-card__meta::after {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+/* ═══════════════════════════════════════
+   Scene Nav / 横线导航按钮
+   ═══════════════════════════════════════ */
+
+.scene__nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: calc(var(--z-card) + 1);
+  opacity: 0;
+  pointer-events: none;
+  transition:
+    opacity 400ms var(--ease-out),
+    color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    background 200ms var(--ease-out);
+}
+
+.scene__nav.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.scene__nav:disabled {
+  opacity: 0.2;
+  cursor: default;
+  pointer-events: none;
+}
+
+.scene__nav--prev {
+  left: 12px;
+}
+
+.scene__nav--next {
+  right: 12px;
+}
+
+.scene__nav:hover:not(:disabled) {
+  color: var(--accent);
+  border-color: var(--accent);
+}
+
+.scene__nav:active:not(:disabled) {
+  background: rgba(193, 84, 44, 0.06);
+}
+
+.scene__nav:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* ═══════════════════════════════════════
+   Post Page / 文章页
+   ═══════════════════════════════════════ */
+
+/* 阅读进度条 */
+.progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 2px;
+  background: var(--accent);
+  z-index: var(--z-progress);
+  transition: width 60ms linear;
+  pointer-events: none;
+}
+
+.post-page {
+  min-height: 100vh;
+  padding: 48px 20px 80px;
+}
+
+.post {
+  max-width: 720px;
+  margin: 0 auto;
+}
+
+/* 文章头部入场动画 */
+.post__back,
+.post__title,
+.post__meta {
+  opacity: 0;
+  animation: fadeSlideUp 0.8s var(--ease-out) forwards;
+}
+
+.post__back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  padding: 8px 0;
+  border: none;
+  background: none;
+  transition: color 200ms var(--ease-out);
+  animation-delay: 0.05s;
+}
+
+/* 返回箭头 */
+.post__back::before {
+  content: "\2190";
+  font-size: 15px;
+  transition: transform 200ms var(--ease-out);
+}
+
+.post__back:hover {
+  color: var(--text);
+}
+
+.post__back:hover::before {
+  transform: translateX(-4px);
+}
+
+.post__back:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 4px;
+}
+
+.post__title {
+  margin: 32px 0 0;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 600;
+  line-height: 1.02;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  animation-delay: 0.18s;
+}
+
+.post__meta {
+  margin: 16px 0 0;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 13px;
+  letter-spacing: 0.04em;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  word-break: break-word;
+  animation-delay: 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 0;
+}
+
+.post__meta-sep {
+  display: inline-block;
+  width: 1px;
+  height: 12px;
+  background: var(--rule);
+  margin: 0 12px;
+}
+
+.post__reading-time {
+  color: var(--muted);
+}
+
+/* 标签列表 */
+.post__tags {
+  list-style: none;
+  margin: 14px 0 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  opacity: 0;
+  animation: fadeSlideUp 0.8s var(--ease-out) 0.38s forwards;
+}
+
+.post__tag {
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 4px 10px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+/* 文章内容区 */
+.post__content {
+  margin-top: 36px;
+  font-size: 17px;
+  line-height: 1.78;
+  opacity: 0;
+  animation: fadeSlideUp 0.9s var(--ease-out) 0.45s forwards;
+}
+
+.post__content p {
+  margin: 0 0 22px;
+}
+
+/* 首段首字下沉（杂志风格） */
+.post__content > p:first-child::first-letter {
+  float: left;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, serif;
+  font-size: 3.6em;
+  font-weight: 600;
+  line-height: 0.78;
+  margin: 0.06em 0.1em 0 -0.02em;
+  color: var(--text);
+}
+
+/* 文章结尾标记 */
+.post__end {
+  text-align: center;
+  margin: 56px 0 0;
+  padding-top: 40px;
+  border-top: 1px solid var(--rule);
+  color: var(--muted);
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+.post__end-mark {
+  display: block;
+  width: 6px;
+  height: 6px;
+  background: var(--ink);
+  margin: 0 auto 14px;
+  transform: rotate(45deg);
+}
+
+/* ═══════════════════════════════════════
+   Markdown 排版
+   ═══════════════════════════════════════ */
+
+.md h2 {
+  margin: 48px 0 16px;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-size: 28px;
+  font-weight: 600;
+  line-height: 1.1;
+  letter-spacing: -0.01em;
+  padding-bottom: 10px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.md h3 {
+  margin: 36px 0 12px;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.md ul,
+.md ol {
+  margin: 0 0 22px;
+  padding-left: 1.4em;
+}
+
+.md li {
+  margin: 8px 0;
+}
+
+.md li::marker {
+  color: var(--muted);
+}
+
+.md blockquote {
+  margin: 28px 0;
+  padding: 18px 22px;
+  border-left: 2px solid var(--ink);
+  background: none;
+  border-radius: 0;
+  color: var(--muted);
+  font-style: italic;
+  position: relative;
+}
+
+.md blockquote p {
+  margin: 0;
+}
+
+.md a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-decoration-thickness: 1px;
+  text-underline-offset: 3px;
+  transition: text-decoration-thickness 160ms var(--ease-out);
+}
+
+.md a:hover {
+  text-decoration-thickness: 2px;
+}
+
+.md code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas,
+    "Liberation Mono", "Courier New", monospace;
+  font-size: 0.88em;
+  padding: 0.15em 0.4em;
+  border-radius: 4px;
+  background: rgba(23, 19, 15, 0.06);
+  border: 1px solid rgba(23, 19, 15, 0.1);
+}
+
+/* 代码块 - 带语言标签 */
+.md pre {
+  margin: 28px 0;
+  padding: 20px 22px;
+  border-radius: 10px;
+  background: var(--card);
+  border: 1px solid rgba(244, 240, 230, 0.06);
+  overflow-x: auto;
+  position: relative;
+}
+
+.md pre code {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  font-size: 13.5px;
+  line-height: 1.65;
+  border-radius: 0;
+  color: var(--cardText);
+}
+
+/* 代码块语言标签（通过 JS 注入） */
+.md pre[data-lang]::before {
+  content: attr(data-lang);
+  position: absolute;
+  top: 10px;
+  right: 14px;
+  font-size: 10px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: rgba(244, 240, 230, 0.3);
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  pointer-events: none;
+}
+
+.md hr {
+  border: 0;
+  height: 1px;
+  background: var(--rule);
+  margin: 36px 0;
+}
+
+.md img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 28px 0;
+  border-radius: 8px;
+  border: 1px solid rgba(23, 19, 15, 0.1);
+}
+
+.md .katex-display {
+  margin: 28px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 8px 0;
+}
+
+.md .katex {
+  font-size: 1.05em;
+}
+
+/* ═══════════════════════════════════════
+   Archive / 首页归档网格
+   ═══════════════════════════════════════ */
+
+.archive {
+  max-width: 1080px;
+  margin: 0 auto;
+  padding: 24px 20px 48px;
+}
+
+.archive__heading {
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 28px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid var(--rule);
+}
+
+.archive__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.archive-card {
+  display: flex;
+  flex-direction: column;
+  padding: 22px 22px 18px;
+  border: 1px solid var(--rule);
+  border-radius: var(--radius);
+  text-decoration: none;
+  color: var(--text);
+  background: var(--bg);
+  transition:
+    border-color 280ms var(--ease-out),
+    box-shadow 280ms var(--ease-out),
+    transform 280ms var(--ease-out);
+}
+
+.archive-card:hover {
+  border-color: rgba(38, 33, 27, 0.32);
+  box-shadow: 0 8px 32px rgba(17, 14, 10, 0.08);
+  transform: translateY(-3px);
+}
+
+.archive-card:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.archive-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  min-height: 22px;
+}
+
+.archive-card__tag {
+  font-size: 10px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-weight: 500;
+  color: var(--muted);
+  padding: 2px 7px;
+  border: 1px solid var(--rule);
+  border-radius: 3px;
+}
+
+.archive-card__title {
+  margin: 12px 0 0;
+  font-family: "Cormorant Garamond", ui-serif, Georgia, Cambria, "Times New Roman",
+    Times, serif;
+  font-size: clamp(20px, 2.4vw, 26px);
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  line-height: 1.2;
+  flex: 1;
+}
+
+.archive-card__footer {
+  margin-top: 16px;
+  padding-top: 12px;
+  border-top: 1px solid var(--rule);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.archive-card__date {
+  font-size: 12px;
+  font-family: ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.archive-card__arrow {
+  font-size: 15px;
+  color: var(--muted);
+  transition: color 280ms var(--ease-out), transform 280ms var(--ease-out);
+}
+
+.archive-card:hover .archive-card__arrow {
+  color: var(--accent);
+  transform: translateX(4px);
+}
+
+/* 响应式：平板 2 列，手机 1 列 */
+@media (max-width: 860px) {
+  .archive__grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 540px) {
+  .archive__grid {
+    grid-template-columns: 1fr;
+  }
+  .scene-card {
+    width: 240px;
+  }
+}
+
+/* ═══════════════════════════════════════
+   滚动揭示动画（IntersectionObserver 驱动）
+   ═══════════════════════════════════════ */
+
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition: opacity 0.65s var(--ease-out), transform 0.65s var(--ease-out);
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════
+   Reduced Motion
+   ═══════════════════════════════════════ */
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__issue,
+  .hero__title,
+  .hero__rule,
+  .hero__tagline,
+  .hero__scroll,
+  .post__back,
+  .post__title,
+  .post__meta,
+  .post__tags,
+  .post__content {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .post-card {
+    transition: none;
+  }
+  .post-card::before {
+    transition: none;
+  }
+  .hero__scroll-line {
+    animation: none;
+    opacity: 0.25;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+  .scene-card {
+    transition: none;
+  }
+  .scene__track {
+    opacity: 1;
+  }
+  .scene__nav {
+    transition: none;
+  }
+}
