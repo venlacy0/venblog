@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir /s \"C:\\\\Users\\\\zh301\\\\Desktop\\\\blog\")",
+      "mcp__chrome-devtools__list_pages",
+      "mcp__chrome-devtools__navigate_page",
+      "mcp__chrome-devtools__take_screenshot",
+      "mcp__chrome-devtools__evaluate_script",
+      "Bash(node scripts/build.mjs:*)",
+      "mcp__chrome-devtools__click",
+      "mcp__chrome-devtools__take_snapshot",
+      "Bash(dir /B \"C:\\\\Users\\\\zh301\\\\Desktop\\\\blog\")",
+      "Bash(npm install:*)",
+      "Bash(node cli.mjs:*)",
+      "Bash(npm link)",
+      "Bash(venblog --version:*)",
+      "Bash(venblog list:*)",
+      "Bash(del \"C:\\\\Users\\\\zh301\\\\Desktop\\\\blog\\\\posts\\\\测试文章.md\")",
+      "Bash(del \"C:\\\\Users\\\\zh301\\\\Desktop\\\\blog\\\\posts\\\\测试文章.html\")",
+      "Bash(venblog build:*)",
+      "Bash(git init:*)",
+      "Bash(git add:*)",
+      "Bash(git commit:*)",
+      "Bash(git push:*)",
+      "mcp__augment-context-engine__codebase-retrieval"
+    ]
+  }
+}
