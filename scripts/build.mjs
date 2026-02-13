@@ -160,96 +160,6 @@ function renderPostPage({ title, date, tags, readingTime, contentHtml }) {
 }
 
 function renderIndexPage(posts) {
-  // 中间展示区：叙事时间轴 + 聚焦面板
-  let showcaseHtml = "";
-  if (posts.length > 0) {
-    const total = String(posts.length).padStart(2, "0");
-
-    const timelineHtml = posts
-      .map((p, i) => {
-        const href = `posts/${encodeURIComponent(p.slug)}.html`;
-        const num = String(i + 1).padStart(2, "0");
-        const dateFmt = formatDateShort(p.date) || "未标注日期";
-        const active = i === 0;
-        return [
-          '              <li class="showcase__timeline-item">',
-          `                <button class="showcase__tab${active ? " is-active" : ""}" type="button" id="showcase-tab-${i}" role="tab" aria-selected="${active ? "true" : "false"}" aria-controls="showcase-panel-${i}" tabindex="${active ? "0" : "-1"}" data-showcase-index="${i}" data-showcase-href="${escapeHtml(href)}">`,
-          `                  <span class="showcase__tab-num">${num}</span>`,
-          `                  <span class="showcase__tab-title">${escapeHtml(p.title)}</span>`,
-          `                  <span class="showcase__tab-date">${escapeHtml(dateFmt)}</span>`,
-          "                </button>",
-          "              </li>",
-        ].join("\n");
-      })
-      .join("\n");
-
-    const panelsHtml = posts
-      .map((p, i) => {
-        const href = `posts/${encodeURIComponent(p.slug)}.html`;
-        const num = String(i + 1).padStart(2, "0");
-        const dateFmt = formatDateShort(p.date) || "未标注日期";
-        const reading = p.readingTime ? `${p.readingTime} 分钟` : "约 1 分钟";
-        const tags = p.tags && p.tags.length > 0 ? p.tags.slice(0, 3).join(" · ") : "未分类";
-        const active = i === 0;
-        return [
-          `            <article class="showcase__panel${active ? " is-active" : ""}" id="showcase-panel-${i}" role="tabpanel" aria-labelledby="showcase-tab-${i}" aria-hidden="${active ? "false" : "true"}" data-showcase-index="${i}">`,
-          `              <p class="showcase__panel-index">${num} / ${total}</p>`,
-          `              <h3 class="showcase__panel-title">${escapeHtml(p.title)}</h3>`,
-          '              <p class="showcase__panel-lead">沿着时间轴阅读这篇文章，查看完整正文与上下文。</p>',
-          '              <div class="showcase__facts">',
-          '                <div class="showcase__fact">',
-          '                  <span class="showcase__fact-label">发布日期</span>',
-          `                  <time class="showcase__fact-value">${escapeHtml(dateFmt)}</time>`,
-          "                </div>",
-          '                <div class="showcase__fact">',
-          '                  <span class="showcase__fact-label">预计阅读</span>',
-          `                  <span class="showcase__fact-value">${escapeHtml(reading)}</span>`,
-          "                </div>",
-          '                <div class="showcase__fact">',
-          '                  <span class="showcase__fact-label">文章标签</span>',
-          `                  <span class="showcase__fact-value">${escapeHtml(tags)}</span>`,
-          "                </div>",
-          "              </div>",
-          `              <a class="showcase__read" href="${escapeHtml(href)}" aria-label="阅读全文：${escapeHtml(p.title)}">`,
-          "                阅读全文",
-          '                <svg class="showcase__read-icon" width="18" height="18" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M4.5 10H15.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><path d="M10.5 5L15.5 10L10.5 15" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-          "              </a>",
-          "            </article>",
-        ].join("\n");
-      })
-      .join("\n");
-
-    showcaseHtml = [
-      "",
-      '      <section class="showcase" aria-label="叙事时间轴">',
-      '        <div class="showcase__inner">',
-      '          <header class="showcase__head">',
-      '            <p class="showcase__kicker">Narrative Timeline</p>',
-      '            <h2 class="showcase__heading">中间叙事展示</h2>',
-      '            <p class="showcase__summary">从最新文章开始，按时间线浏览每篇内容并直接进入全文。</p>',
-      "          </header>",
-      '          <div class="showcase__body">',
-      '            <ol class="showcase__timeline" role="tablist" aria-label="文章时间轴">',
-      timelineHtml,
-      "            </ol>",
-      '            <div class="showcase__panels">',
-      panelsHtml,
-      "            </div>",
-      "          </div>",
-      '          <div class="showcase__controls">',
-      '            <button class="showcase__nav showcase__nav--prev" type="button" aria-label="查看上一篇">',
-      '              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M12.5 15L7.5 10L12.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      "            </button>",
-      '            <button class="showcase__nav showcase__nav--next" type="button" aria-label="查看下一篇">',
-      '              <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true"><path d="M7.5 15L12.5 10L7.5 5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>',
-      "            </button>",
-      `            <p class="showcase__status" aria-live="polite">第 <span data-showcase-current>1</span> / <span data-showcase-total>${posts.length}</span> 篇</p>`,
-      "          </div>",
-      "        </div>",
-      "      </section>",
-    ].join("\n");
-  }
-
   // 归档区域：网格卡片布局，一行 3 个
   let archiveHtml = "";
   if (posts.length > 0) {
@@ -308,7 +218,6 @@ function renderIndexPage(posts) {
     "        </div>",
     "      </section>",
     "",
-    showcaseHtml,
     archiveHtml,
     "    </main>",
     "",
