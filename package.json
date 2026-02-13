@@ -3,6 +3,9 @@
   "version": "0.1.0",
   "description": "轻量级静态博客 CLI —— Markdown 驱动，零框架，编辑杂志风格",
   "type": "module",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "bin": {
     "venblog": "./cli.mjs"
   },

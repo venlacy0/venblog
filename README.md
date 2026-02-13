@@ -22,6 +22,48 @@ npm run serve
 
 打开 `http://127.0.0.1:5173/` 预览。
 
+## 运行方式（推荐）
+
+不依赖全局安装，克隆到任意设备都能直接跑：
+
+```bash
+npm run build
+npm run serve
+npm run new -- "文章标题"
+```
+
+也可以直接用 Node 调 CLI（等价）：
+
+```bash
+node cli.mjs build
+node cli.mjs serve
+node cli.mjs new "文章标题"
+```
+
+## 安装 venblog 命令（可选）
+
+如果你希望在终端里直接用 `venblog ...`（不通过 `npm run`），需要全局安装/链接：
+
+```bash
+# 从源码全局安装（常用；如果你移动/删除源码目录，重新装一次即可）
+npm install -g .
+```
+
+开发调试可用：
+
+```bash
+# 从当前目录创建全局软链接（移动/删除目录会导致链接失效）
+npm link
+```
+
+如果你想让全局安装与源码目录完全解耦，可以先打包再安装：
+
+```bash
+npm pack
+# 用上一步输出的 .tgz 文件名替换这里
+npm install -g ./venblog-<version>.tgz
+```
+
 ## CLI 命令
 
 | 命令 | 说明 |
@@ -36,9 +78,49 @@ npm run serve
 
 也可通过 npm scripts 使用：`npm run build`、`npm run serve`、`npm run new`、`npm run list`、`npm run clean`。
 
+## 常见问题
+
+### PowerShell 报错：Cannot find module ...\npm\node_modules\venblog\cli.mjs
+
+这是典型的“全局 venblog 链接失效”（常见于之前 `npm link` 过，但后来移动/删除了原目录）。修复方式：
+
+```bash
+npm unlink -g venblog
+npm install -g .
+```
+
+如果你不想动全局环境，直接在项目目录用 `npm run build/serve` 或 `node cli.mjs ...` 即可。
+
+### PowerShell 报错：venblog.ps1 无法加载，因为禁止运行脚本
+
+这是 PowerShell 的执行策略限制。你有三种选择：
+
+```bash
+# 1) 直接调用 .cmd shim（不依赖 PowerShell 脚本执行权限）
+venblog.cmd build
+```
+
+```powershell
+# 2) 仅对当前用户放开脚本执行（会修改本机设置）
+Set-ExecutionPolicy -Scope CurrentUser RemoteSigned
+```
+
+```bash
+# 3) 不使用全局 venblog，改用项目内命令（最稳）
+npm run build
+```
+
+### 终端提示：venblog 不是命令 / 找不到命令
+
+说明你没有全局安装 venblog。直接用项目内命令即可，或者按上面的“安装 venblog 命令（可选）”安装。
+
+### Node 版本过低
+
+本项目要求 Node.js `>= 18`。升级 Node 后重新执行 `npm install`。
+
 ## 写博文
 
-1. 创建文章：`venblog new "文章标题"` 或手动在 `posts/` 下新建 `.md` 文件
+1. 创建文章：`npm run new -- "文章标题"`（或手动在 `posts/` 下新建 `.md` 文件）
 2. 支持 YAML frontmatter：
 
 ```markdown
