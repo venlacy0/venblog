@@ -74,64 +74,81 @@ function initScene() {
   const scene = document.querySelector(".scene");
   const sticky = document.querySelector(".scene__sticky");
   const path = document.querySelector("#chainPath");
+  const rail = document.querySelector("#sceneRail");
+  const viewport = document.querySelector("#sceneViewport");
   const track = document.querySelector("#sceneTrack");
 
-  if (!scene || !sticky || !path || !track) return;
+  if (!scene || !sticky || !path || !rail || !viewport || !track) return;
 
   const reducedMotion = window.matchMedia?.(
     "(prefers-reduced-motion: reduce)",
   )?.matches;
 
-  const scrollHint = document.querySelector(".hero__scroll");
   const prevBtn = document.querySelector(".scene__nav--prev");
   const nextBtn = document.querySelector(".scene__nav--next");
+
+  const scrollBehavior = reducedMotion ? "auto" : "smooth";
 
   const pathLen = path.getTotalLength();
   path.style.strokeDasharray = String(pathLen);
   path.style.strokeDashoffset = String(pathLen);
 
   let trackRevealed = false;
+  let didCenter = false;
+  let navRaf = 0;
+
+  function scheduleNavUpdate() {
+    if (navRaf) return;
+    navRaf = requestAnimationFrame(() => {
+      navRaf = 0;
+      updateNavButtons();
+    });
+  }
+
+  function centerViewport() {
+    const max = viewport.scrollWidth - viewport.clientWidth;
+    if (max <= 1) return;
+    viewport.scrollLeft = Math.round(max / 2);
+  }
+
+  function measureStep() {
+    const first = track.querySelector(".scene-card");
+    if (!first) return 320;
+    const cardW = first.getBoundingClientRect().width || 0;
+    const styles = getComputedStyle(track);
+    const gapStr = styles.columnGap || styles.gap || "0";
+    const gap = Number.parseFloat(gapStr) || 0;
+    return Math.max(120, Math.round(cardW + gap));
+  }
 
   /** 检测轨道是否可以滚动，并更新导航按钮状态 */
   function updateNavButtons() {
     if (!prevBtn || !nextBtn) return;
 
-    const stickyRect = sticky.getBoundingClientRect();
-    const cards = track.querySelectorAll(".scene-card");
-    if (cards.length === 0) return;
+    const max = viewport.scrollWidth - viewport.clientWidth;
+    const overflows = max > 2;
 
-    const firstCard = cards[0].getBoundingClientRect();
-    const lastCard = cards[cards.length - 1].getBoundingClientRect();
-    const totalCardsWidth = lastCard.right - firstCard.left;
-
-    // 轨道内容是否超出可视区
-    const overflows = totalCardsWidth > stickyRect.width - 120;
-
-    if (overflows && trackRevealed) {
-      prevBtn.classList.add("is-visible");
-      nextBtn.classList.add("is-visible");
-
-      prevBtn.disabled = firstCard.left >= stickyRect.left + 60;
-      nextBtn.disabled = lastCard.right <= stickyRect.right - 60;
-    } else {
+    if (!overflows || !trackRevealed) {
       prevBtn.classList.remove("is-visible");
       nextBtn.classList.remove("is-visible");
+      prevBtn.disabled = true;
+      nextBtn.disabled = true;
+      return;
     }
+
+    prevBtn.classList.add("is-visible");
+    nextBtn.classList.add("is-visible");
+
+    const left = viewport.scrollLeft;
+    prevBtn.disabled = left <= 1;
+    nextBtn.disabled = left >= max - 1;
   }
 
-  /** 水平滚动轨道（按钮驱动，使用 CSS transform 偏移） */
-  let navOffset = 0;
+  /** 水平滚动轨道（按钮驱动，使用真实滚动容器） */
   function scrollTrack(direction) {
-    const scrollAmount = 320;
-    if (direction === "prev") {
-      navOffset = Math.min(0, navOffset + scrollAmount);
-    } else {
-      navOffset = navOffset - scrollAmount;
-    }
-    // navOffset 会在 render 里叠加到 translateX 上
-    // 需要触发一次渲染
-    kick();
-    setTimeout(updateNavButtons, 420);
+    const step = measureStep();
+    const delta = direction === "prev" ? -step : step;
+    viewport.scrollBy({ left: delta, behavior: scrollBehavior });
   }
 
   if (prevBtn) {
@@ -141,6 +158,8 @@ function initScene() {
     nextBtn.addEventListener("click", () => scrollTrack("next"));
   }
 
+  viewport.addEventListener("scroll", scheduleNavUpdate, { passive: true });
+
   function render(progress01) {
     const p = clamp01(progress01);
 
@@ -148,46 +167,48 @@ function initScene() {
     const drawP = easeOutCubic(clamp01((p - 0.03) / 0.55));
     path.style.strokeDashoffset = String(pathLen * (1 - drawP));
 
-    // 2) 轨道从右往左滑入（滚动驱动）
+    // 2) 展示栏从右往左滑入（滚动驱动）
     const moveP = easeInOutCubic(clamp01((p - 0.18) / 0.62));
     const opacity = clamp01((p - 0.12) / 0.18);
 
-    // 计算居中位置和起始位置
     const stickyW = sticky.offsetWidth;
-    const trackW = track.scrollWidth;
-    const centeredX = (stickyW - trackW) / 2;
     const startX = stickyW + 40; // 从右侧屏幕外
-    const tx = lerp(startX, centeredX, moveP) + navOffset;
+    const tx = lerp(startX, 0, moveP);
 
-    track.style.transform = `translate3d(${tx}px, -50%, 0)`;
-    track.style.opacity = opacity.toFixed(3);
+    rail.style.transform = `translate3d(${tx}px, -50%, 0)`;
+    rail.style.opacity = opacity.toFixed(3);
+    rail.classList.toggle("is-interactive", opacity > 0.08);
 
     // 标记轨道是否已到位（用于导航按钮）
     const nowRevealed = moveP > 0.92;
     if (nowRevealed !== trackRevealed) {
       trackRevealed = nowRevealed;
       if (trackRevealed) {
-        setTimeout(updateNavButtons, 100);
+        if (!didCenter) {
+          didCenter = true;
+          requestAnimationFrame(() => {
+            centerViewport();
+            updateNavButtons();
+          });
+        } else {
+          scheduleNavUpdate();
+        }
       } else {
         if (prevBtn) prevBtn.classList.remove("is-visible");
         if (nextBtn) nextBtn.classList.remove("is-visible");
       }
     }
-
-    // 滚动时隐藏首屏滚动提示
-    if (scrollHint) {
-      scrollHint.style.opacity = String(Math.max(0, 1 - p * 8));
-    }
   }
 
   if (reducedMotion) {
     path.style.strokeDashoffset = "0";
+    rail.style.transform = "translate3d(0, -50%, 0)";
+    rail.style.opacity = "1";
+    rail.classList.add("is-interactive");
     trackRevealed = true;
-    const stickyW = sticky.offsetWidth;
-    const trackW = track.scrollWidth;
-    track.style.transform = `translate3d(${(stickyW - trackW) / 2}px, -50%, 0)`;
-    track.style.opacity = "1";
+    centerViewport();
     updateNavButtons();
+    window.addEventListener("resize", scheduleNavUpdate, { passive: true });
     return;
   }
 
@@ -231,7 +252,7 @@ function initScene() {
   window.addEventListener("scroll", kick, { passive: true });
   window.addEventListener("resize", () => {
     kick();
-    updateNavButtons();
+    scheduleNavUpdate();
   });
   kick();
 }

@@ -203,20 +203,43 @@ main {
    Scene Track / 横线博文卡片轨道
    ═══════════════════════════════════════ */
 
-.scene__track {
+.scene__rail {
   position: absolute;
   top: 50%;
   left: 0;
-  display: flex;
-  gap: 20px;
+  right: 0;
+  transform: translate3d(0, -50%, 0);
   z-index: var(--z-card);
   will-change: transform, opacity;
-  /* JS 控制 transform 和 opacity */
   opacity: 0;
+  pointer-events: none;
 }
 
-.scene__track.no-transition {
-  transition: none;
+.scene__rail.is-interactive {
+  pointer-events: auto;
+}
+
+.scene__viewport {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0 72px;
+  scroll-padding: 0 72px;
+  scroll-snap-type: x proximity;
+  scroll-behavior: smooth;
+  overscroll-behavior-x: contain;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+
+.scene__viewport::-webkit-scrollbar {
+  display: none;
+}
+
+.scene__track {
+  display: flex;
+  gap: 20px;
+  width: max-content;
+  margin: 0 auto;
 }
 
 .scene-card {
@@ -233,6 +256,7 @@ main {
   flex-direction: column;
   overflow: hidden;
   position: relative;
+  scroll-snap-align: start;
   transition:
     transform 320ms var(--ease-out),
     box-shadow 320ms var(--ease-out),
@@ -324,8 +348,8 @@ main {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  width: 38px;
-  height: 38px;
+  width: 44px;
+  height: 44px;
   border-radius: 50%;
   border: 1px solid var(--rule);
   background: var(--bg);
@@ -825,6 +849,10 @@ main {
   .scene-card {
     width: 240px;
   }
+  .scene__viewport {
+    padding: 0 58px;
+    scroll-padding: 0 58px;
+  }
 }
 
 /* ═══════════════════════════════════════
@@ -874,8 +902,9 @@ main {
   .scene-card {
     transition: none;
   }
-  .scene__track {
+  .scene__rail {
     opacity: 1;
+    transform: translate3d(0, -50%, 0);
   }
   .scene__nav {
     transition: none;
