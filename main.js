@@ -1,31 +1,11 @@
-/* Motion-driven scroll scene:
+/* Home page interactions:
    - Hero parallax on scroll.
-   - Draws the chain path from left to right as you scroll.
-   - Reveals a horizontal track of post cards along the line.
-   - Nav buttons scroll the track when cards overflow.
+   - Showcase timeline tab navigation.
 */
 
-function clamp01(v) {
-  if (v < 0) return 0;
-  if (v > 1) return 1;
-  return v;
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
 }
-
-function easeOutCubic(x) {
-  return 1 - Math.pow(1 - x, 3);
-}
-
-function easeInOutCubic(x) {
-  if (x < 0.5) return 4 * x * x * x;
-  return 1 - Math.pow(-2 * x + 2, 3) / 2;
-}
-
-function lerp(a, b, t) {
-  return a + (b - a) * t;
-}
-
-const VIEWBOX_W = 1000;
-const VIEWBOX_H = 220;
 
 /* ─── Hero 视差 ─── */
 function initHeroParallax() {
@@ -38,22 +18,22 @@ function initHeroParallax() {
   )?.matches;
   if (reducedMotion) return;
 
-  let lastY = 0;
   let rafId = 0;
 
   function update() {
     const scrollY = window.scrollY || window.pageYOffset;
-    const heroH = hero.offsetHeight;
-    // 只在 hero 可视范围内生效
+    const heroH = hero.offsetHeight || 1;
+
     if (scrollY > heroH) {
       rafId = 0;
       return;
     }
+
     const ratio = scrollY / heroH;
-    // 标题上移 + 微微缩小 + 淡出
     const ty = scrollY * 0.35;
     const scale = 1 - ratio * 0.06;
     const opacity = 1 - ratio * 1.2;
+
     heroInner.style.transform = `translate3d(0, ${ty}px, 0) scale(${scale})`;
     heroInner.style.opacity = String(Math.max(0, opacity));
     rafId = 0;
@@ -69,220 +49,133 @@ function initHeroParallax() {
   update();
 }
 
-/* ─── 主滚动场景 ─── */
-function initScene() {
-  const scene = document.querySelector(".scene");
-  const sticky = document.querySelector(".scene__sticky");
-  const path = document.querySelector("#chainPath");
-  const track = document.querySelector("#sceneTrack");
+/* ─── 中间展示区：叙事时间轴 ─── */
+function initShowcase() {
+  const showcase = document.querySelector(".showcase");
+  if (!showcase) return;
 
-  if (!scene || !sticky || !path || !track) return;
+  const timeline = showcase.querySelector(".showcase__timeline");
+  const tabs = Array.from(showcase.querySelectorAll(".showcase__tab"));
+  const panels = Array.from(showcase.querySelectorAll(".showcase__panel"));
 
-  // 兼容旧版 index.html：如果缺少 rail/viewport，则在运行时补齐结构
-  let rail = document.querySelector("#sceneRail");
-  let viewport = document.querySelector("#sceneViewport");
+  if (!timeline || tabs.length === 0 || panels.length === 0) return;
 
-  if (!rail || !viewport) {
-    rail = document.createElement("div");
-    rail.className = "scene__rail";
-    rail.id = "sceneRail";
-
-    viewport = document.createElement("div");
-    viewport.className = "scene__viewport";
-    viewport.id = "sceneViewport";
-
-    // 将 track 包进 viewport/rail
-    const parent = track.parentNode;
-    viewport.appendChild(track);
-    rail.appendChild(viewport);
-
-    if (parent) parent.appendChild(rail);
-  }
+  const prevBtn = showcase.querySelector(".showcase__nav--prev");
+  const nextBtn = showcase.querySelector(".showcase__nav--next");
+  const currentEl = showcase.querySelector("[data-showcase-current]");
+  const totalEl = showcase.querySelector("[data-showcase-total]");
 
   const reducedMotion = window.matchMedia?.(
     "(prefers-reduced-motion: reduce)",
   )?.matches;
-
-  const prevBtn = document.querySelector(".scene__nav--prev");
-  const nextBtn = document.querySelector(".scene__nav--next");
-
   const scrollBehavior = reducedMotion ? "auto" : "smooth";
 
-  const pathLen = path.getTotalLength();
-  path.style.strokeDasharray = String(pathLen);
-  path.style.strokeDashoffset = String(pathLen);
+  let activeIndex = tabs.findIndex(
+    (tab) => tab.getAttribute("aria-selected") === "true",
+  );
+  if (activeIndex < 0) activeIndex = 0;
 
-  let trackRevealed = false;
-  let didCenter = false;
-  let navRaf = 0;
+  function updateNavButtons() {
+    const maxIndex = tabs.length - 1;
+    if (prevBtn) prevBtn.disabled = activeIndex <= 0;
+    if (nextBtn) nextBtn.disabled = activeIndex >= maxIndex;
+  }
 
-  // 只有 JS 生效时才启用“默认隐藏 + 动效显现”，避免出现“没 JS 就一片空白”
-  scene.classList.add("scene--js");
+  function updateStatus() {
+    if (currentEl) currentEl.textContent = String(activeIndex + 1);
+    if (totalEl) totalEl.textContent = String(tabs.length);
+  }
 
-  function scheduleNavUpdate() {
-    if (navRaf) return;
-    navRaf = requestAnimationFrame(() => {
-      navRaf = 0;
-      updateNavButtons();
+  function keepTabInView(index) {
+    const tab = tabs[index];
+    if (!tab) return;
+    tab.scrollIntoView({
+      behavior: scrollBehavior,
+      block: "nearest",
+      inline: "nearest",
     });
   }
 
-  function centerViewport() {
-    const max = viewport.scrollWidth - viewport.clientWidth;
-    if (max <= 1) return;
-    viewport.scrollLeft = Math.round(max / 2);
-  }
+  function setActive(index, options = {}) {
+    const { focusTab = false } = options;
+    const nextIndex = clamp(index, 0, tabs.length - 1);
+    activeIndex = nextIndex;
 
-  function measureStep() {
-    const first = track.querySelector(".scene-card");
-    if (!first) return 320;
-    const cardW = first.getBoundingClientRect().width || 0;
-    const styles = getComputedStyle(track);
-    const gapStr = styles.columnGap || styles.gap || "0";
-    const gap = Number.parseFloat(gapStr) || 0;
-    return Math.max(120, Math.round(cardW + gap));
-  }
+    tabs.forEach((tab, i) => {
+      const active = i === activeIndex;
+      tab.classList.toggle("is-active", active);
+      tab.setAttribute("aria-selected", active ? "true" : "false");
+      tab.tabIndex = active ? 0 : -1;
+    });
 
-  /** 检测轨道是否可以滚动，并更新导航按钮状态 */
-  function updateNavButtons() {
-    if (!prevBtn || !nextBtn) return;
+    panels.forEach((panel, i) => {
+      const active = i === activeIndex;
+      panel.classList.toggle("is-active", active);
+      panel.setAttribute("aria-hidden", active ? "false" : "true");
+    });
 
-    const max = viewport.scrollWidth - viewport.clientWidth;
-    const overflows = max > 2;
+    updateStatus();
+    updateNavButtons();
+    keepTabInView(activeIndex);
 
-    if (!overflows || !trackRevealed) {
-      prevBtn.classList.remove("is-visible");
-      nextBtn.classList.remove("is-visible");
-      prevBtn.disabled = true;
-      nextBtn.disabled = true;
-      return;
+    if (focusTab) {
+      tabs[activeIndex]?.focus();
     }
-
-    prevBtn.classList.add("is-visible");
-    nextBtn.classList.add("is-visible");
-
-    const left = viewport.scrollLeft;
-    prevBtn.disabled = left <= 1;
-    nextBtn.disabled = left >= max - 1;
   }
 
-  /** 水平滚动轨道（按钮驱动，使用真实滚动容器） */
-  function scrollTrack(direction) {
-    const step = measureStep();
-    const delta = direction === "prev" ? -step : step;
-    viewport.scrollBy({ left: delta, behavior: scrollBehavior });
+  function moveBy(delta, focusTab) {
+    setActive(activeIndex + delta, { focusTab });
   }
+
+  timeline.addEventListener("click", (event) => {
+    const tab = event.target.closest(".showcase__tab");
+    if (!tab) return;
+    const idx = Number(tab.dataset.showcaseIndex);
+    if (!Number.isFinite(idx)) return;
+    setActive(idx, { focusTab: false });
+  });
+
+  timeline.addEventListener("keydown", (event) => {
+    const tab = event.target.closest(".showcase__tab");
+    if (!tab) return;
+
+    switch (event.key) {
+      case "ArrowRight":
+      case "ArrowDown":
+        event.preventDefault();
+        moveBy(1, true);
+        break;
+      case "ArrowLeft":
+      case "ArrowUp":
+        event.preventDefault();
+        moveBy(-1, true);
+        break;
+      case "Home":
+        event.preventDefault();
+        setActive(0, { focusTab: true });
+        break;
+      case "End":
+        event.preventDefault();
+        setActive(tabs.length - 1, { focusTab: true });
+        break;
+      default:
+        break;
+    }
+  });
 
   if (prevBtn) {
-    prevBtn.addEventListener("click", () => scrollTrack("prev"));
+    prevBtn.addEventListener("click", () => moveBy(-1, true));
   }
   if (nextBtn) {
-    nextBtn.addEventListener("click", () => scrollTrack("next"));
+    nextBtn.addEventListener("click", () => moveBy(1, true));
   }
 
-  viewport.addEventListener("scroll", scheduleNavUpdate, { passive: true });
-
-  function render(progress01) {
-    const p = clamp01(progress01);
-
-    // 1) 横线从左向右绘出
-    const drawP = easeOutCubic(clamp01((p - 0.03) / 0.55));
-    path.style.strokeDashoffset = String(pathLen * (1 - drawP));
-
-    // 2) 展示栏从右往左滑入（滚动驱动）
-    const moveP = easeInOutCubic(clamp01((p - 0.18) / 0.62));
-    const opacity = clamp01((p - 0.12) / 0.18);
-
-    // 展示栏进场：小幅右移回弹，避免整块被推到屏幕外导致“看不到内容”
-    const stickyW = sticky.offsetWidth;
-    const enterX = Math.min(140, Math.max(60, stickyW * 0.18));
-    const tx = lerp(enterX, 0, moveP);
-
-    rail.style.transform = `translate3d(${tx}px, -50%, 0)`;
-    rail.style.opacity = opacity.toFixed(3);
-    rail.classList.toggle("is-interactive", opacity > 0.08);
-
-    // 标记轨道是否已到位（用于导航按钮）
-    const nowRevealed = moveP > 0.92;
-    if (nowRevealed !== trackRevealed) {
-      trackRevealed = nowRevealed;
-      if (trackRevealed) {
-        if (!didCenter) {
-          didCenter = true;
-          requestAnimationFrame(() => {
-            centerViewport();
-            updateNavButtons();
-          });
-        } else {
-          scheduleNavUpdate();
-        }
-      } else {
-        if (prevBtn) prevBtn.classList.remove("is-visible");
-        if (nextBtn) nextBtn.classList.remove("is-visible");
-      }
-    }
-  }
-
-  if (reducedMotion) {
-    path.style.strokeDashoffset = "0";
-    rail.style.transform = "translate3d(0, -50%, 0)";
-    rail.style.opacity = "1";
-    rail.classList.add("is-interactive");
-    trackRevealed = true;
-    centerViewport();
-    updateNavButtons();
-    window.addEventListener("resize", scheduleNavUpdate, { passive: true });
-    return;
-  }
-
-  let target = 0;
-  let current = 0;
-  let ticking = false;
-
-  function computeTargetProgress() {
-    const rect = scene.getBoundingClientRect();
-    const vh = window.innerHeight || 1;
-    const total = rect.height - vh;
-    if (total <= 0) return 0;
-    const scrolled = Math.min(Math.max(-rect.top, 0), total);
-    return scrolled / total;
-  }
-
-  function kick() {
-    target = computeTargetProgress();
-    if (!ticking) {
-      ticking = true;
-      requestAnimationFrame(tick);
-    }
-  }
-
-  function tick() {
-    current = current + (target - current) * 0.12;
-
-    const done = Math.abs(target - current) < 0.0007;
-    if (done) current = target;
-
-    render(current);
-
-    if (!done) {
-      requestAnimationFrame(tick);
-      return;
-    }
-
-    ticking = false;
-  }
-
-  window.addEventListener("scroll", kick, { passive: true });
-  window.addEventListener("resize", () => {
-    kick();
-    scheduleNavUpdate();
-  });
-  kick();
+  setActive(activeIndex);
 }
 
 function init() {
   initHeroParallax();
-  initScene();
+  initShowcase();
 }
 
 if (document.readyState === "loading") {
