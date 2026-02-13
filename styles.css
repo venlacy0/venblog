@@ -79,17 +79,6 @@ main {
   }
 }
 
-@keyframes scrollPulse {
-  0%, 100% {
-    opacity: 0.08;
-    transform: scaleY(0.5) translateY(-4px);
-  }
-  50% {
-    opacity: 0.35;
-    transform: scaleY(1) translateY(4px);
-  }
-}
-
 @keyframes progressGlow {
   0%, 100% { opacity: 0.7; }
   50% { opacity: 1; }
@@ -100,7 +89,8 @@ main {
    ═══════════════════════════════════════ */
 
 .hero {
-  height: 65vh;
+  min-height: 100vh;
+  min-height: 100svh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -169,28 +159,6 @@ main {
   animation-delay: 0.65s;
 }
 
-/* 滚动提示 */
-.hero__scroll {
-  position: absolute;
-  bottom: 36px;
-  left: 50%;
-  transform: translateX(-50%);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  opacity: 0;
-  animation: fadeSlideUp 0.8s var(--ease-out) 1s forwards;
-  transition: opacity 0.4s var(--ease-smooth);
-}
-
-.hero__scroll-line {
-  display: block;
-  width: 1px;
-  height: 40px;
-  background: var(--ink);
-  animation: scrollPulse 2.4s ease-in-out infinite;
-}
 
 /* ═══════════════════════════════════════
    Scene / 动效区
@@ -883,7 +851,6 @@ main {
   .hero__title,
   .hero__rule,
   .hero__tagline,
-  .hero__scroll,
   .post__back,
   .post__title,
   .post__meta,
@@ -898,10 +865,6 @@ main {
   }
   .post-card::before {
     transition: none;
-  }
-  .hero__scroll-line {
-    animation: none;
-    opacity: 0.25;
   }
   .reveal {
     opacity: 1;
