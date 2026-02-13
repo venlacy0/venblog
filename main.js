@@ -74,11 +74,30 @@ function initScene() {
   const scene = document.querySelector(".scene");
   const sticky = document.querySelector(".scene__sticky");
   const path = document.querySelector("#chainPath");
-  const rail = document.querySelector("#sceneRail");
-  const viewport = document.querySelector("#sceneViewport");
   const track = document.querySelector("#sceneTrack");
 
-  if (!scene || !sticky || !path || !rail || !viewport || !track) return;
+  if (!scene || !sticky || !path || !track) return;
+
+  // 兼容旧版 index.html：如果缺少 rail/viewport，则在运行时补齐结构
+  let rail = document.querySelector("#sceneRail");
+  let viewport = document.querySelector("#sceneViewport");
+
+  if (!rail || !viewport) {
+    rail = document.createElement("div");
+    rail.className = "scene__rail";
+    rail.id = "sceneRail";
+
+    viewport = document.createElement("div");
+    viewport.className = "scene__viewport";
+    viewport.id = "sceneViewport";
+
+    // 将 track 包进 viewport/rail
+    const parent = track.parentNode;
+    viewport.appendChild(track);
+    rail.appendChild(viewport);
+
+    if (parent) parent.appendChild(rail);
+  }
 
   const reducedMotion = window.matchMedia?.(
     "(prefers-reduced-motion: reduce)",
@@ -96,6 +115,9 @@ function initScene() {
   let trackRevealed = false;
   let didCenter = false;
   let navRaf = 0;
+
+  // 只有 JS 生效时才启用“默认隐藏 + 动效显现”，避免出现“没 JS 就一片空白”
+  scene.classList.add("scene--js");
 
   function scheduleNavUpdate() {
     if (navRaf) return;
@@ -171,9 +193,10 @@ function initScene() {
     const moveP = easeInOutCubic(clamp01((p - 0.18) / 0.62));
     const opacity = clamp01((p - 0.12) / 0.18);
 
+    // 展示栏进场：小幅右移回弹，避免整块被推到屏幕外导致“看不到内容”
     const stickyW = sticky.offsetWidth;
-    const startX = stickyW + 40; // 从右侧屏幕外
-    const tx = lerp(startX, 0, moveP);
+    const enterX = Math.min(140, Math.max(60, stickyW * 0.18));
+    const tx = lerp(enterX, 0, moveP);
 
     rail.style.transform = `translate3d(${tx}px, -50%, 0)`;
     rail.style.opacity = opacity.toFixed(3);

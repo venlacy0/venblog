@@ -211,11 +211,18 @@ main {
   transform: translate3d(0, -50%, 0);
   z-index: var(--z-card);
   will-change: transform, opacity;
+  /* 默认可见（无 JS 时也能看到内容） */
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* JS 模式：由 main.js 控制显隐与可交互 */
+.scene.scene--js .scene__rail {
   opacity: 0;
   pointer-events: none;
 }
 
-.scene__rail.is-interactive {
+.scene.scene--js .scene__rail.is-interactive {
   pointer-events: auto;
 }
 
