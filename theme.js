@@ -12,8 +12,8 @@
   var THEME_KEY = "venblog-theme";
   var HUE_KEY = "venblog-hue";
 
-  /* 默认色相 (蓝色系 ≈ 212°) */
-  var DEFAULT_HUE = 212;
+  /* 默认色相 (原始暖棕色调 ≈ 16°) */
+  var DEFAULT_HUE = 16;
 
   /* ═══════════════════════════════════════
      亮/暗模式
