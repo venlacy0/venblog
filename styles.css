@@ -12,14 +12,32 @@
   --shadow: 0 18px 60px rgba(17, 14, 10, 0.18);
   --shadowHover: 0 24px 80px rgba(17, 14, 10, 0.26);
   --radius: 14px;
+  --codeBg: rgba(23, 19, 15, 0.06);
+  --codeBorder: rgba(23, 19, 15, 0.1);
 
   --z-base: 0;
   --z-line: 10;
   --z-card: 20;
   --z-progress: 100;
+  --z-theme-toggle: 50;
 
   --ease-out: cubic-bezier(0.2, 0.9, 0.2, 1);
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] {
+  --bg: #1e1b17;
+  --text: #e2dbd0;
+  --muted: #968d82;
+  --ink: #cfc7ba;
+  --rule: rgba(207, 199, 186, 0.14);
+  --card: #282420;
+  --cardText: #e2dbd0;
+  --accent: #d4693a;
+  --shadow: 0 18px 60px rgba(0, 0, 0, 0.3);
+  --shadowHover: 0 24px 80px rgba(0, 0, 0, 0.4);
+  --codeBg: rgba(255, 255, 255, 0.06);
+  --codeBorder: rgba(255, 255, 255, 0.08);
 }
 
 ::selection {
@@ -416,8 +434,8 @@ main {
   font-size: 0.88em;
   padding: 0.15em 0.4em;
   border-radius: 4px;
-  background: rgba(23, 19, 15, 0.06);
-  border: 1px solid rgba(23, 19, 15, 0.1);
+  background: var(--codeBg);
+  border: 1px solid var(--codeBorder);
 }
 
 /* 代码块 - 带语言标签 */
@@ -775,6 +793,68 @@ main {
 .reveal.is-visible {
   opacity: 1;
   transform: translateY(0);
+}
+
+/* ═══════════════════════════════════════
+   主题切换按钮
+   ═══════════════════════════════════════ */
+
+.theme-toggle {
+  position: fixed;
+  top: 18px;
+  right: 18px;
+  z-index: var(--z-theme-toggle);
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid var(--rule);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--muted);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition:
+    color 200ms var(--ease-out),
+    border-color 200ms var(--ease-out),
+    background-color 200ms var(--ease-out);
+}
+
+.theme-toggle:hover {
+  color: var(--text);
+  border-color: rgba(38, 33, 27, 0.32);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  border-color: rgba(207, 199, 186, 0.3);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+.theme-toggle svg {
+  width: 18px;
+  height: 18px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* 亮色模式显示月亮，暗色模式显示太阳 */
+.theme-toggle .icon-sun { display: none; }
+.theme-toggle .icon-moon { display: block; }
+
+[data-theme="dark"] .theme-toggle .icon-sun { display: block; }
+[data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+[data-theme="dark"] ::selection {
+  background: rgba(212, 105, 58, 0.2);
+  color: var(--text);
 }
 
 /* ═══════════════════════════════════════
