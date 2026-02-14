@@ -24,47 +24,65 @@
 
       <section class="archive" aria-label="文章归档">
         <h2 class="archive__heading">Archive</h2>
-        <div class="archive__grid">
-          <a class="archive-card" href="posts/%E4%B8%96%E7%95%8C.html">
-            <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
-            <h3 class="archive-card__title">世界</h3>
-            <div class="archive-card__footer">
-              <time class="archive-card__date">2026.02.13</time>
-              <span class="archive-card__arrow">&rarr;</span>
+        <div class="archive__layout">
+          <aside class="archive__sidebar" aria-label="标签筛选">
+            <h3 class="archive__sidebar-title">Tags</h3>
+            <div class="archive__tag-list" role="group" aria-label="按标签筛选文章">
+            <button class="archive-tag is-active" type="button" data-tag="全部" aria-pressed="true">
+              <span class="archive-tag__name">全部</span>
+              <span class="archive-tag__count">5</span>
+            </button>
+            <button class="archive-tag" type="button" data-tag="散篇" aria-pressed="false">
+              <span class="archive-tag__name">散篇</span>
+              <span class="archive-tag__count">5</span>
+            </button>
             </div>
-          </a>
-          <a class="archive-card" href="posts/%E5%A4%8F.html">
-            <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
-            <h3 class="archive-card__title">夏</h3>
-            <div class="archive-card__footer">
-              <time class="archive-card__date">2026.02.13</time>
-              <span class="archive-card__arrow">&rarr;</span>
+          </aside>
+          <div class="archive__content">
+            <p class="archive__status" aria-live="polite">显示全部 · 5 篇</p>
+            <div class="archive__grid">
+              <a class="archive-card" href="posts/%E4%B8%96%E7%95%8C.html" data-tags="[&quot;散篇&quot;]">
+                <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
+                <h3 class="archive-card__title">世界</h3>
+                <div class="archive-card__footer">
+                  <time class="archive-card__date">2026.02.13</time>
+                  <span class="archive-card__arrow">&rarr;</span>
+                </div>
+              </a>
+              <a class="archive-card" href="posts/%E5%A4%8F.html" data-tags="[&quot;散篇&quot;]">
+                <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
+                <h3 class="archive-card__title">夏</h3>
+                <div class="archive-card__footer">
+                  <time class="archive-card__date">2026.02.13</time>
+                  <span class="archive-card__arrow">&rarr;</span>
+                </div>
+              </a>
+              <a class="archive-card" href="posts/%E5%8F%8B%E4%BA%BA.html" data-tags="[&quot;散篇&quot;]">
+                <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
+                <h3 class="archive-card__title">友人</h3>
+                <div class="archive-card__footer">
+                  <time class="archive-card__date">2026.02.13</time>
+                  <span class="archive-card__arrow">&rarr;</span>
+                </div>
+              </a>
+              <a class="archive-card" href="posts/Dream.html" data-tags="[&quot;散篇&quot;]">
+                <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
+                <h3 class="archive-card__title">Dream</h3>
+                <div class="archive-card__footer">
+                  <time class="archive-card__date">2026.02.13</time>
+                  <span class="archive-card__arrow">&rarr;</span>
+                </div>
+              </a>
+              <a class="archive-card" href="posts/Shining%20Star%2CShining%20Coin.html" data-tags="[&quot;散篇&quot;]">
+                <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
+                <h3 class="archive-card__title">Shining Star,Shining Coin</h3>
+                <div class="archive-card__footer">
+                  <time class="archive-card__date">2026.02.13</time>
+                  <span class="archive-card__arrow">&rarr;</span>
+                </div>
+              </a>
             </div>
-          </a>
-          <a class="archive-card" href="posts/%E5%8F%8B%E4%BA%BA.html">
-            <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
-            <h3 class="archive-card__title">友人</h3>
-            <div class="archive-card__footer">
-              <time class="archive-card__date">2026.02.13</time>
-              <span class="archive-card__arrow">&rarr;</span>
-            </div>
-          </a>
-          <a class="archive-card" href="posts/Dream.html">
-            <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
-            <h3 class="archive-card__title">Dream</h3>
-            <div class="archive-card__footer">
-              <time class="archive-card__date">2026.02.13</time>
-              <span class="archive-card__arrow">&rarr;</span>
-            </div>
-          </a>
-          <a class="archive-card" href="posts/Shining%20Star%2CShining%20Coin.html">
-            <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
-            <h3 class="archive-card__title">Shining Star,Shining Coin</h3>
-            <div class="archive-card__footer">
-              <time class="archive-card__date">2026.02.13</time>
-              <span class="archive-card__arrow">&rarr;</span>
-            </div>
-          </a>
+          </div>
         </div>
       </section>
     </main>

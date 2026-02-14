@@ -109,6 +109,24 @@ export function formatDateShort(dateStr) {
   return `${m[1]}.${m[2].padStart(2, "0")}.${m[3].padStart(2, "0")}`;
 }
 
+function normalizeTags(tags) {
+  const normalized = [];
+  const seen = new Set();
+
+  for (const rawTag of Array.isArray(tags) ? tags : []) {
+    const tag = String(rawTag || "").trim();
+    if (!tag || seen.has(tag)) continue;
+    seen.add(tag);
+    normalized.push(tag);
+  }
+
+  if (normalized.length === 0) {
+    normalized.push("未分类");
+  }
+
+  return normalized;
+}
+
 /* ─── 页面模板 ─── */
 
 function renderPostPage({ title, date, tags, readingTime, contentHtml }) {
@@ -160,35 +178,74 @@ function renderPostPage({ title, date, tags, readingTime, contentHtml }) {
 }
 
 function renderIndexPage(posts) {
-  // 归档区域：网格卡片布局，一行 3 个
+  // 归档区域：左侧标签筛选 + 右侧文章网格
   let archiveHtml = "";
   if (posts.length > 0) {
+    const allTagLabel = "全部";
+    const tagCountMap = new Map();
+
     const cards = posts
       .map((p) => {
         const href = `posts/${encodeURIComponent(p.slug)}.html`;
         const dateFmt = formatDateShort(p.date);
-        const tagList = (p.tags || [])
+        const normalizedTags = normalizeTags(p.tags);
+        for (const tag of normalizedTags) {
+          tagCountMap.set(tag, (tagCountMap.get(tag) || 0) + 1);
+        }
+
+        const tagList = normalizedTags
           .map((t) => `<span class="archive-card__tag">${escapeHtml(t)}</span>`)
           .join("");
+        const serializedTags = escapeHtml(JSON.stringify(normalizedTags));
+
         return [
-          `          <a class="archive-card" href="${escapeHtml(href)}">`,
-          `            <div class="archive-card__tags">${tagList}</div>`,
-          `            <h3 class="archive-card__title">${escapeHtml(p.title)}</h3>`,
-          `            <div class="archive-card__footer">`,
-          `              <time class="archive-card__date">${escapeHtml(dateFmt)}</time>`,
-          `              <span class="archive-card__arrow">&rarr;</span>`,
-          `            </div>`,
-          `          </a>`,
+          `              <a class="archive-card" href="${escapeHtml(href)}" data-tags="${serializedTags}">`,
+          `                <div class="archive-card__tags">${tagList}</div>`,
+          `                <h3 class="archive-card__title">${escapeHtml(p.title)}</h3>`,
+          `                <div class="archive-card__footer">`,
+          `                  <time class="archive-card__date">${escapeHtml(dateFmt)}</time>`,
+          `                  <span class="archive-card__arrow">&rarr;</span>`,
+          `                </div>`,
+          `              </a>`,
         ].join("\n");
       })
       .join("\n");
+
+    const allTags = [...tagCountMap.keys()].sort((a, b) => a.localeCompare(b, "zh-Hans-CN"));
+
+    const tagButtons = [
+      `            <button class="archive-tag is-active" type="button" data-tag="${allTagLabel}" aria-pressed="true">`,
+      `              <span class="archive-tag__name">${allTagLabel}</span>`,
+      `              <span class="archive-tag__count">${posts.length}</span>`,
+      "            </button>",
+      ...allTags.map((tag) => {
+        const count = tagCountMap.get(tag) || 0;
+        return [
+          `            <button class="archive-tag" type="button" data-tag="${escapeHtml(tag)}" aria-pressed="false">`,
+          `              <span class="archive-tag__name">${escapeHtml(tag)}</span>`,
+          `              <span class="archive-tag__count">${count}</span>`,
+          "            </button>",
+        ].join("\n");
+      }),
+    ].join("\n");
 
     archiveHtml = [
       "",
       '      <section class="archive" aria-label="文章归档">',
       '        <h2 class="archive__heading">Archive</h2>',
-      '        <div class="archive__grid">',
+      '        <div class="archive__layout">',
+      '          <aside class="archive__sidebar" aria-label="标签筛选">',
+      '            <h3 class="archive__sidebar-title">Tags</h3>',
+      '            <div class="archive__tag-list" role="group" aria-label="按标签筛选文章">',
+      tagButtons,
+      "            </div>",
+      "          </aside>",
+      '          <div class="archive__content">',
+      `            <p class="archive__status" aria-live="polite">显示${allTagLabel} · ${posts.length} 篇</p>`,
+      '            <div class="archive__grid">',
       cards,
+      "            </div>",
+      "          </div>",
       "        </div>",
       "      </section>",
     ].join("\n");
