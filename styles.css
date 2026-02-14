@@ -805,15 +805,12 @@ main {
   top: 18px;
   right: 18px;
   z-index: var(--z-theme-toggle);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  pointer-events: none;
+  /* 固定宽度 = 按钮大小，不遮挡旁边的语言按钮 */
+  width: 36px;
 }
 
 .theme-toggle {
   position: relative;
-  pointer-events: auto;
   width: 36px;
   height: 36px;
   padding: 0;
@@ -864,7 +861,11 @@ main {
 
 /* ── 色相调节条 ── */
 .hue-panel {
-  margin-top: 8px;
+  position: absolute;
+  top: 100%;
+  right: 0;
+  /* padding-top 补充鼠标从按钮滑到面板的间隙热区 */
+  padding-top: 8px;
   opacity: 0;
   visibility: hidden;
   transform: translateY(-6px) scaleY(0.9);
