@@ -129,6 +129,9 @@ function normalizeTags(tags) {
 
 /* ─── 页面模板 ─── */
 
+/* 构建时间戳，用于缓存破坏 */
+const CACHE_VER = Date.now().toString(36);
+
 function renderPostPage({ title, date, tags, readingTime, contentHtml }) {
   const safeTitle = escapeHtml(String(title));
   const dateFmt = formatDate(date);
@@ -152,10 +155,10 @@ function renderPostPage({ title, date, tags, readingTime, contentHtml }) {
     '    <meta name="viewport" content="width=device-width, initial-scale=1" />',
     `    <title>${safeTitle} · Venlacy's Blog</title>`,
     '    <meta name="description" content="Venlacy\'s Blog post." />',
-    '    <link rel="stylesheet" href="../styles.css" />',
-    '    <link rel="stylesheet" href="../vendor/katex/katex.min.css" />',
-    '    <script src="../theme.js"><\/script>',
-    '    <script src="../i18n.js" defer><\/script>',
+    `    <link rel="stylesheet" href="../styles.css?v=${CACHE_VER}" />`,
+    `    <link rel="stylesheet" href="../vendor/katex/katex.min.css?v=${CACHE_VER}" />`,
+    `    <script src="../theme.js?v=${CACHE_VER}"><\/script>`,
+    `    <script src="../i18n.js?v=${CACHE_VER}" defer><\/script>`,
     "  </head>",
     '  <body class="post-page">',
     '    <button class="lang-toggle" type="button" aria-label="切换语言">En</button>',
@@ -177,7 +180,7 @@ function renderPostPage({ title, date, tags, readingTime, contentHtml }) {
     "        fin",
     "      </footer>",
     "    </article>",
-    '    <script src="../post.js" defer><\/script>',
+    `    <script src="../post.js?v=${CACHE_VER}" defer><\/script>`,
     "  </body>",
     "</html>",
     "",
@@ -269,9 +272,9 @@ function renderIndexPage(posts) {
     '      name="description"',
     '      content="Venlacy\'s Blog. Motion-driven editorial blog experience."',
     "    />",
-    '    <link rel="stylesheet" href="styles.css" />',
-    '    <script src="theme.js"><\/script>',
-    '    <script src="i18n.js" defer><\/script>',
+    `    <link rel="stylesheet" href="styles.css?v=${CACHE_VER}" />`,
+    `    <script src="theme.js?v=${CACHE_VER}"><\/script>`,
+    `    <script src="i18n.js?v=${CACHE_VER}" defer><\/script>`,
     "  </head>",
     "  <body>",
     '    <button class="lang-toggle" type="button" aria-label="切换语言">En</button>',
@@ -292,7 +295,7 @@ function renderIndexPage(posts) {
     archiveHtml,
     "    </main>",
     "",
-    '    <script src="main.js" defer></script>',
+    `    <script src="main.js?v=${CACHE_VER}" defer></script>`,
     "  </body>",
     "</html>",
     "",
