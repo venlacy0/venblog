@@ -136,6 +136,7 @@ export async function startDevServer(rootDir, options = {}) {
     path.join(rootDir, "main.js"),
     path.join(rootDir, "post.js"),
     path.join(rootDir, "theme.js"),
+    path.join(rootDir, "i18n.js"),
   ];
 
   let building = false;

@@ -16,7 +16,8 @@
     "styles.css",
     "main.js",
     "post.js",
-    "theme.js"
+    "theme.js",
+    "i18n.js"
   ],
   "scripts": {
     "build": "node cli.mjs build",
