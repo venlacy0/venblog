@@ -132,6 +132,7 @@ export async function startDevServer(rootDir, options = {}) {
 
   const watchPaths = [
     path.join(rootDir, "posts", "*.md"),
+    path.join(rootDir, "venblog.config.json"),
     path.join(rootDir, "styles.css"),
     path.join(rootDir, "main.js"),
     path.join(rootDir, "post.js"),

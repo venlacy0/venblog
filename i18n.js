@@ -44,25 +44,55 @@
   function saveOrig(el, id) { if (!origMap.has(id)) origMap.set(id, el.textContent); }
   function restoreOrig(el, id) { if (origMap.has(id)) el.textContent = origMap.get(id); }
 
+  function formatStatusTemplate(template, variables) {
+    return String(template || "").replace(/\{(\w+)\}/g, function (_, key) {
+      if (Object.prototype.hasOwnProperty.call(variables, key)) {
+        return String(variables[key]);
+      }
+      return "";
+    });
+  }
+
+  function getLangToggleText(btn, lang) {
+    var zhText = btn.getAttribute("data-zh-text") || "En";
+    var enText = btn.getAttribute("data-en-text") || "中";
+    return lang === "zh" ? zhText : enText;
+  }
+
   function refreshArchiveStatus(lang) {
+    var archive = document.querySelector(".archive");
     var status = document.querySelector(".archive__status");
-    if (!status) return;
+    if (!archive || !status) return;
 
     var activeBtn = document.querySelector(".archive-tag.is-active");
     var activeName = activeBtn ? activeBtn.querySelector(".archive-tag__name") : null;
     var activeTag = activeName ? activeName.textContent.trim() : "";
+    var allTagZh = archive.getAttribute("data-all-tag-zh") || "全部";
+    var allTagEn = archive.getAttribute("data-all-tag-en") || "all";
+    var statusTplZh =
+      archive.getAttribute("data-status-template-zh") || "显示{tag} · {count} 篇";
+    var statusTplEn =
+      archive.getAttribute("data-status-template-en") || "Showing {tag} · {count} {noun}";
     var visibleCount = document.querySelectorAll(".archive-card:not([hidden])").length;
-    var isAll = !activeTag || activeTag === "全部" || activeTag.toLowerCase() === "all";
+    var isAll = !activeBtn || activeBtn.getAttribute("data-is-all") === "true";
+    var noun = visibleCount === 1 ? "article" : "articles";
 
     if (lang === "en") {
-      var enTag = isAll ? "all" : activeTag;
-      status.textContent =
-        "Showing " + enTag + " \xb7 " + visibleCount + " article" + (visibleCount === 1 ? "" : "s");
+      var enTag = isAll ? allTagEn : activeTag;
+      status.textContent = formatStatusTemplate(statusTplEn, {
+        tag: enTag,
+        count: visibleCount,
+        noun: noun,
+      });
       return;
     }
 
-    var zhTag = isAll ? "全部" : activeTag;
-    status.textContent = "显示" + zhTag + " \xb7 " + visibleCount + " 篇";
+    var zhTag = isAll ? allTagZh : activeTag;
+    status.textContent = formatStatusTemplate(statusTplZh, {
+      tag: zhTag,
+      count: visibleCount,
+      noun: noun,
+    });
   }
 
   function refreshArchiveViewLabels(lang) {
@@ -192,7 +222,7 @@
     var btn = document.querySelector(".lang-toggle");
     if (!btn) return;
 
-    btn.textContent = lang === "zh" ? "En" : "\u4e2d";
+    btn.textContent = getLangToggleText(btn, lang);
     document.documentElement.setAttribute("data-lang", lang);
     refreshArchiveViewLabels(lang);
 
@@ -201,7 +231,7 @@
       var next = cur === "zh" ? "en" : "zh";
       localStorage.setItem(STORAGE_KEY, next);
       document.documentElement.setAttribute("data-lang", next);
-      btn.textContent = next === "zh" ? "En" : "\u4e2d";
+      btn.textContent = getLangToggleText(btn, next);
       refreshArchiveViewLabels(next);
 
       if (next === "en") {

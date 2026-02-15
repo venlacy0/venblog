@@ -1,0 +1,44 @@
+{
+  "site": {
+    "lang": "zh-CN",
+    "title": "Venlacy's Blog",
+    "description": "Venlacy's Blog. Motion-driven editorial blog experience.",
+    "postDescription": "Venlacy's Blog post."
+  },
+  "hero": {
+    "ariaLabel": "首页",
+    "issue": "Issue 001",
+    "title": "Venlacy's Blog",
+    "tagline": "thoughts, craft & code"
+  },
+  "buttons": {
+    "langToggleAriaLabel": "切换语言",
+    "langToggleTextZh": "En",
+    "langToggleTextEn": "中",
+    "themeToggleAriaLabel": "切换主题"
+  },
+  "archive": {
+    "sectionAriaLabel": "文章归档",
+    "heading": "Archive",
+    "sidebarAriaLabel": "标签筛选",
+    "sidebarTitle": "Tags",
+    "tagListAriaLabel": "按标签筛选文章",
+    "allTagLabelZh": "全部",
+    "allTagLabelEn": "all",
+    "statusTemplateZh": "显示{tag} · {count} 篇",
+    "statusTemplateEn": "Showing {tag} · {count} {noun}",
+    "viewSwitchLabelZh": "切换文章视图",
+    "viewSwitchLabelEn": "Switch archive view",
+    "gridViewLabelZh": "瀑布视图",
+    "gridViewLabelEn": "Masonry view",
+    "listViewLabelZh": "平铺视图",
+    "listViewLabelEn": "List view"
+  },
+  "post": {
+    "articleAriaLabel": "博客文章",
+    "backText": "返回",
+    "backAriaLabel": "返回首页",
+    "readingTimeTextZh": "分钟阅读",
+    "endMarkText": "fin"
+  }
+}

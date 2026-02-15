@@ -3,17 +3,17 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Venlacy's Blog</title>
+    <title>Venlacy&#39;s Blog</title>
     <meta
       name="description"
-      content="Venlacy's Blog. Motion-driven editorial blog experience."
+      content="Venlacy&#39;s Blog. Motion-driven editorial blog experience."
     />
-    <link rel="stylesheet" href="styles.css?v=mlndifuq" />
-    <script src="theme.js?v=mlndifuq"></script>
-    <script src="i18n.js?v=mlndifuq" defer></script>
+    <link rel="stylesheet" href="styles.css?v=mlndye0v" />
+    <script src="theme.js?v=mlndye0v"></script>
+    <script src="i18n.js?v=mlndye0v" defer></script>
   </head>
   <body>
-    <button class="lang-toggle" type="button" aria-label="切换语言">En</button>
+    <button class="lang-toggle" type="button" aria-label="切换语言" data-zh-text="En" data-en-text="中">En</button>
     <button class="theme-toggle" type="button" aria-label="切换主题">
       <svg class="icon-moon" viewBox="0 0 24 24"><path d="M21 12.79A9 9 0 1 1 11.21 3a7 7 0 0 0 9.79 9.79z"/></svg>
       <svg class="icon-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
@@ -22,20 +22,20 @@
       <section class="hero" aria-label="首页">
         <div class="hero__inner">
           <p class="hero__issue">Issue 001</p>
-          <h1 class="hero__title">Venlacy's Blog</h1>
+          <h1 class="hero__title">Venlacy&#39;s Blog</h1>
           <hr class="hero__rule" />
           <p class="hero__tagline">thoughts, craft &amp; code</p>
         </div>
       </section>
 
 
-      <section class="archive" aria-label="文章归档">
+      <section class="archive" aria-label="文章归档" data-all-tag-zh="全部" data-all-tag-en="all" data-status-template-zh="显示{tag} · {count} 篇" data-status-template-en="Showing {tag} · {count} {noun}">
         <h2 class="archive__heading">Archive</h2>
         <div class="archive__layout">
           <aside class="archive__sidebar" aria-label="标签筛选">
             <h3 class="archive__sidebar-title">Tags</h3>
             <div class="archive__tag-list" role="group" aria-label="按标签筛选文章">
-            <button class="archive-tag is-active" type="button" data-tag="全部" aria-pressed="true">
+            <button class="archive-tag is-active" type="button" data-tag="全部" data-is-all="true" aria-pressed="true">
               <span class="archive-tag__name">全部</span>
               <span class="archive-tag__count">7</span>
             </button>
@@ -144,6 +144,6 @@
       </section>
     </main>
 
-    <script src="main.js?v=mlndifuq" defer></script>
+    <script src="main.js?v=mlndye0v" defer></script>
   </body>
 </html>

@@ -57,7 +57,12 @@ function initArchiveTagFilter() {
   const cards = Array.from(archive.querySelectorAll(".archive-card"));
   if (!tagList || buttons.length === 0 || cards.length === 0) return;
 
-  const allTagLabel = "全部";
+  const allTagLabel = archive.dataset.allTagZh || "全部";
+  const allTagLabelEn = archive.dataset.allTagEn || "all";
+  const statusTemplateZh =
+    archive.dataset.statusTemplateZh || "显示{tag} · {count} 篇";
+  const statusTemplateEn =
+    archive.dataset.statusTemplateEn || "Showing {tag} · {count} {noun}";
   const viewModeKey = "venblog-archive-view";
   const validTags = new Set(buttons.map((b) => b.dataset.tag).filter(Boolean));
 
@@ -269,6 +274,15 @@ function initArchiveTagFilter() {
     }
   }
 
+  function formatStatus(template, variables) {
+    return String(template).replace(/\{(\w+)\}/g, (_, key) => {
+      if (Object.prototype.hasOwnProperty.call(variables, key)) {
+        return String(variables[key]);
+      }
+      return "";
+    });
+  }
+
   function setStatus(tag, count) {
     if (!statusEl) return;
 
@@ -276,16 +290,16 @@ function initArchiveTagFilter() {
     const activeBtn = buttons.find((btn) => btn.dataset.tag === tag);
     const activeName = activeBtn?.querySelector(".archive-tag__name")?.textContent?.trim();
     const isAll = tag === allTagLabel;
+    const noun = count === 1 ? "article" : "articles";
 
     if (lang === "en") {
-      const enTag = isAll ? "all" : (activeName || tag);
-      const noun = count === 1 ? "article" : "articles";
-      statusEl.textContent = `Showing ${enTag} · ${count} ${noun}`;
+      const enTag = isAll ? allTagLabelEn : (activeName || tag);
+      statusEl.textContent = formatStatus(statusTemplateEn, { tag: enTag, count, noun });
       return;
     }
 
     const zhTag = isAll ? allTagLabel : (activeName || tag);
-    statusEl.textContent = `显示${zhTag} · ${count} 篇`;
+    statusEl.textContent = formatStatus(statusTemplateZh, { tag: zhTag, count, noun });
   }
 
   function syncUrl(tag) {

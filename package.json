@@ -17,7 +17,8 @@
     "main.js",
     "post.js",
     "theme.js",
-    "i18n.js"
+    "i18n.js",
+    "venblog.config.json"
   ],
   "scripts": {
     "build": "node cli.mjs build",
