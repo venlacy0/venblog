@@ -170,6 +170,39 @@ function initArchiveTagFilter() {
     });
   }
 
+  function cancelCardAnimations() {
+    for (const card of cards) {
+      if (typeof card.getAnimations !== "function") continue;
+      for (const anim of card.getAnimations()) {
+        anim.cancel();
+      }
+    }
+  }
+
+  function animateFilterChange() {
+    if (!gridEl || prefersReducedMotion() || typeof document.body?.animate !== "function") {
+      return;
+    }
+
+    const visibleCards = cards.filter((card) => !card.hidden);
+    const maxStagger = 90;
+
+    visibleCards.forEach((card, idx) => {
+      card.animate(
+        [
+          { opacity: 0, transform: "translateY(10px)" },
+          { opacity: 1, transform: "translateY(0)" },
+        ],
+        {
+          duration: 260,
+          easing: "cubic-bezier(0.2, 0.9, 0.2, 1)",
+          delay: Math.min(idx * 20, maxStagger),
+          fill: "both",
+        },
+      );
+    });
+  }
+
   function readViewMode() {
     try {
       const stored = localStorage.getItem(viewModeKey);
@@ -266,6 +299,12 @@ function initArchiveTagFilter() {
   }
 
   function applyFilter(tag, { updateUrl } = { updateUrl: true }) {
+    viewAnimToken += 1;
+    if (gridEl) {
+      gridEl.classList.remove("is-view-animating");
+    }
+    cancelCardAnimations();
+
     const nextTag = validTags.has(tag) ? tag : allTagLabel;
     let visibleCount = 0;
 
@@ -273,9 +312,11 @@ function initArchiveTagFilter() {
       const { card, tags } = item;
       const match = nextTag === allTagLabel ? true : tags.includes(nextTag);
       card.hidden = !match;
+      card.classList.toggle("is-hidden", !match);
       if (match) visibleCount += 1;
     }
 
+    animateFilterChange();
     setActiveButton(nextTag);
     setStatus(nextTag, visibleCount);
     if (updateUrl) syncUrl(nextTag);
