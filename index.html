@@ -8,9 +8,9 @@
       name="description"
       content="Venlacy's Blog. Motion-driven editorial blog experience."
     />
-    <link rel="stylesheet" href="styles.css?v=mlma9l7g" />
-    <script src="theme.js?v=mlma9l7g"></script>
-    <script src="i18n.js?v=mlma9l7g" defer></script>
+    <link rel="stylesheet" href="styles.css?v=mlnd4r0w" />
+    <script src="theme.js?v=mlnd4r0w"></script>
+    <script src="i18n.js?v=mlnd4r0w" defer></script>
   </head>
   <body>
     <button class="lang-toggle" type="button" aria-label="切换语言">En</button>
@@ -37,17 +37,59 @@
             <div class="archive__tag-list" role="group" aria-label="按标签筛选文章">
             <button class="archive-tag is-active" type="button" data-tag="全部" aria-pressed="true">
               <span class="archive-tag__name">全部</span>
-              <span class="archive-tag__count">6</span>
+              <span class="archive-tag__count">7</span>
+            </button>
+            <button class="archive-tag" type="button" data-tag="2api" aria-pressed="false">
+              <span class="archive-tag__name">2api</span>
+              <span class="archive-tag__count">1</span>
+            </button>
+            <button class="archive-tag" type="button" data-tag="技术" aria-pressed="false">
+              <span class="archive-tag__name">技术</span>
+              <span class="archive-tag__count">1</span>
             </button>
             <button class="archive-tag" type="button" data-tag="散篇" aria-pressed="false">
               <span class="archive-tag__name">散篇</span>
               <span class="archive-tag__count">6</span>
             </button>
+            <button class="archive-tag" type="button" data-tag="网络" aria-pressed="false">
+              <span class="archive-tag__name">网络</span>
+              <span class="archive-tag__count">1</span>
+            </button>
             </div>
           </aside>
           <div class="archive__content">
-            <p class="archive__status" aria-live="polite">显示全部 · 6 篇</p>
+            <div class="archive__status-row">
+              <p class="archive__status" aria-live="polite">显示全部 · 7 篇</p>
+              <div class="archive__view-switch" role="group" aria-label="切换文章视图" data-label-zh="切换文章视图" data-label-en="Switch archive view">
+                <button class="archive-view-btn is-active" type="button" data-view="grid" data-label-zh="瀑布视图" data-label-en="Masonry view" aria-pressed="true" aria-label="瀑布视图" title="瀑布视图">
+                  <svg class="archive-view-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3.5" y="4" width="7" height="6.5" rx="1.2"></rect>
+                    <rect x="13.5" y="4" width="7" height="10.5" rx="1.2"></rect>
+                    <rect x="3.5" y="12.5" width="7" height="7.5" rx="1.2"></rect>
+                    <rect x="13.5" y="16.5" width="7" height="3.5" rx="1.2"></rect>
+                  </svg>
+                </button>
+                <button class="archive-view-btn" type="button" data-view="list" data-label-zh="平铺视图" data-label-en="List view" aria-pressed="false" aria-label="平铺视图" title="平铺视图">
+                  <svg class="archive-view-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="3.5" y="5.5" width="3" height="3" rx="0.8"></rect>
+                    <line x1="9.5" y1="7" x2="20.5" y2="7"></line>
+                    <rect x="3.5" y="10.5" width="3" height="3" rx="0.8"></rect>
+                    <line x1="9.5" y1="12" x2="20.5" y2="12"></line>
+                    <rect x="3.5" y="15.5" width="3" height="3" rx="0.8"></rect>
+                    <line x1="9.5" y1="17" x2="20.5" y2="17"></line>
+                  </svg>
+                </button>
+              </div>
+            </div>
             <div class="archive__grid">
+              <a class="archive-card" href="posts/%E8%AE%B0%E4%B8%80%E6%AC%A12api.html" data-tags="[&quot;2api&quot;,&quot;网络&quot;,&quot;技术&quot;]">
+                <div class="archive-card__tags"><span class="archive-card__tag">2api</span><span class="archive-card__tag">网络</span><span class="archive-card__tag">技术</span></div>
+                <h3 class="archive-card__title">记一次2api</h3>
+                <div class="archive-card__footer">
+                  <time class="archive-card__date">2026.02.15</time>
+                  <span class="archive-card__arrow">&rarr;</span>
+                </div>
+              </a>
               <a class="archive-card" href="posts/%E5%85%B3%E4%BA%8E%E6%AD%BB%E4%BA%A1.html" data-tags="[&quot;散篇&quot;]">
                 <div class="archive-card__tags"><span class="archive-card__tag">散篇</span></div>
                 <h3 class="archive-card__title">关于死亡</h3>
@@ -102,6 +144,6 @@
       </section>
     </main>
 
-    <script src="main.js?v=mlma9l7g" defer></script>
+    <script src="main.js?v=mlnd4r0w" defer></script>
   </body>
 </html>

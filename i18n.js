@@ -44,6 +44,47 @@
   function saveOrig(el, id) { if (!origMap.has(id)) origMap.set(id, el.textContent); }
   function restoreOrig(el, id) { if (origMap.has(id)) el.textContent = origMap.get(id); }
 
+  function refreshArchiveStatus(lang) {
+    var status = document.querySelector(".archive__status");
+    if (!status) return;
+
+    var activeBtn = document.querySelector(".archive-tag.is-active");
+    var activeName = activeBtn ? activeBtn.querySelector(".archive-tag__name") : null;
+    var activeTag = activeName ? activeName.textContent.trim() : "";
+    var visibleCount = document.querySelectorAll(".archive-card:not([hidden])").length;
+    var isAll = !activeTag || activeTag === "全部" || activeTag.toLowerCase() === "all";
+
+    if (lang === "en") {
+      var enTag = isAll ? "all" : activeTag;
+      status.textContent =
+        "Showing " + enTag + " \xb7 " + visibleCount + " article" + (visibleCount === 1 ? "" : "s");
+      return;
+    }
+
+    var zhTag = isAll ? "全部" : activeTag;
+    status.textContent = "显示" + zhTag + " \xb7 " + visibleCount + " 篇";
+  }
+
+  function refreshArchiveViewLabels(lang) {
+    var viewSwitch = document.querySelector(".archive__view-switch");
+    if (!viewSwitch) return;
+
+    var groupLabel = lang === "en"
+      ? viewSwitch.getAttribute("data-label-en")
+      : viewSwitch.getAttribute("data-label-zh");
+    if (groupLabel) viewSwitch.setAttribute("aria-label", groupLabel);
+
+    viewSwitch.querySelectorAll(".archive-view-btn").forEach(function (btn) {
+      var text = lang === "en"
+        ? btn.getAttribute("data-label-en")
+        : btn.getAttribute("data-label-zh");
+      if (text) {
+        btn.setAttribute("aria-label", text);
+        btn.setAttribute("title", text);
+      }
+    });
+  }
+
   /* 收集需要翻译的元素（排除 code/pre） */
   function collectBlocks(root) {
     var out = [];
@@ -108,9 +149,8 @@
       if (dm) dateEl.textContent = MONTHS[+dm[2] - 1] + " " + +dm[3] + ", " + dm[1];
     }
 
-    /* 归档状态文字 */
     var status = document.querySelector(".archive__status");
-    if (status) { saveOrig(status, "status"); var m = status.textContent.match(/(\d+)/); if (m) status.textContent = "Showing all \xb7 " + m[1] + " articles"; }
+    if (status) saveOrig(status, "status");
 
     /* 归档标题 */
     var archiveH = document.querySelector(".archive__heading");
@@ -121,6 +161,8 @@
     if (sidebarT) { saveOrig(sidebarT, "sidebarT"); }
 
     await Promise.all(jobs);
+    refreshArchiveStatus("en");
+    refreshArchiveViewLabels("en");
   }
 
   /* 恢复中文 */
@@ -139,6 +181,9 @@
       else if (id.startsWith("tag-")) { el = document.querySelectorAll(".archive-tag__name, .archive-card__tag, .post__tag")[+id.slice(4)]; }
       if (el) el.textContent = text;
     });
+
+    refreshArchiveStatus("zh");
+    refreshArchiveViewLabels("zh");
   }
 
   /* ─── 初始化 ─── */
@@ -149,6 +194,7 @@
 
     btn.textContent = lang === "zh" ? "En" : "\u4e2d";
     document.documentElement.setAttribute("data-lang", lang);
+    refreshArchiveViewLabels(lang);
 
     btn.addEventListener("click", async function () {
       var cur = getLang();
@@ -156,6 +202,7 @@
       localStorage.setItem(STORAGE_KEY, next);
       document.documentElement.setAttribute("data-lang", next);
       btn.textContent = next === "zh" ? "En" : "\u4e2d";
+      refreshArchiveViewLabels(next);
 
       if (next === "en") {
         btn.classList.add("is-loading");

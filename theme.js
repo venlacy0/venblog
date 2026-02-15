@@ -38,6 +38,39 @@
   /* 尽早执行，防止闪烁 */
   applyTheme(getPreferredTheme());
 
+  /* 进入页面时统一回到顶部（保留锚点跳转） */
+  function initScrollTopOnOpen() {
+    if (window.location.hash) return;
+
+    if ("scrollRestoration" in window.history) {
+      window.history.scrollRestoration = "manual";
+    }
+
+    function scrollTopNow() {
+      window.scrollTo(0, 0);
+    }
+
+    if (document.readyState === "loading") {
+      document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+          requestAnimationFrame(scrollTopNow);
+          setTimeout(scrollTopNow, 0);
+        },
+        { once: true },
+      );
+    } else {
+      requestAnimationFrame(scrollTopNow);
+      setTimeout(scrollTopNow, 0);
+    }
+
+    window.addEventListener("pageshow", function () {
+      scrollTopNow();
+    });
+  }
+
+  initScrollTopOnOpen();
+
   /* ═══════════════════════════════════════
      HSL 色彩生成器
      根据一个色相值 (0-360) 生成完整的亮/暗色板
@@ -137,6 +170,10 @@
         "--codeBorder",
         "rgba(255, 255, 255, 0.07)"
       );
+      root.style.setProperty(
+        "--selectionBg",
+        hsla(hue, 64, 62, 0.28)
+      );
     } else {
       root.style.setProperty("--bg", hslToHex(hue, 14, 95));
       root.style.setProperty("--text", hslToHex(hue, 22, 9));
@@ -164,6 +201,10 @@
       root.style.setProperty(
         "--codeBorder",
         hsla(hue, 20, 10, 0.08)
+      );
+      root.style.setProperty(
+        "--selectionBg",
+        hsla(hue, 62, 45, 0.18)
       );
     }
   }

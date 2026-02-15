@@ -3,7 +3,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>世界 · Venlacy's Blog</title>
+    <title>记一次2api · Venlacy's Blog</title>
     <meta name="description" content="Venlacy's Blog post." />
     <link rel="stylesheet" href="../styles.css?v=mlnd4r0w" />
     <link rel="stylesheet" href="../vendor/katex/katex.min.css?v=mlnd4r0w" />
@@ -19,25 +19,19 @@
     <div class="progress-bar" aria-hidden="true"></div>
     <article class="post" aria-label="博客文章">
       <a class="post__back" href="../index.html" aria-label="返回首页">返回</a>
-      <h1 class="post__title">世界</h1>
-      <div class="post__meta"><time class="post__date">2026 年 2 月 13 日</time><span class="post__meta-sep"></span><span class="post__reading-time">1 分钟阅读</span></div>
+      <h1 class="post__title">记一次2api</h1>
+      <div class="post__meta"><time class="post__date">2026 年 2 月 15 日</time><span class="post__meta-sep"></span><span class="post__reading-time">1 分钟阅读</span></div>
 
-      <ul class="post__tags"><li class="post__tag">散篇</li></ul>
+      <ul class="post__tags"><li class="post__tag">2api</li><li class="post__tag">网络</li><li class="post__tag">技术</li></ul>
       <div class="post__content md">
-<p>雪，堆积，如白的毯，白白茫茫。</p>
-<p>深深浅浅的脚印从背后绕到身前。</p>
-<p>树，不大挺拔。启明星挂在枝头，淡淡微光。</p>
-<p>天，空荡荡，无边际的黑。</p>
-<p>狂风肆虐……行至小屋停歇。炉火正燃。</p>
-<p>静谧，似是理想的中的世界吧……</p>
-<p>可雪为什么会从地上飘向天</p>
-<p>树头的启明星为什么忽闪忽灭</p>
-<p>天为何不时有双眼盯着我</p>
-<p>我逃到了小屋中。</p>
-<p>炉火暗淡。</p>
-<p>盯着桌上的水晶球——其中的人儿。</p>
-<p>闹剧，</p>
-<p>这世上，只有我一人罢了</p>
+<p>那天在cc中用anyrouter，然后突发奇想，寻思为什么不能在其他客户端使用anyrouter呢？</p>
+<p>然后尝试了一下，发现会报错显示缺少claude code的请求头。</p>
+<p>这简单呀！打开Reqable的终端，抓了一下cc的包，把请求头复制粘贴一下。重新请求了一边。</p>
+<p>结果发现还是没法请求。然后在莹酱的指导下，发现请求头中需要一段系统提示词。</p>
+<pre><code>You are Claude Code, Anthropic's official CLI for Claude.
+</code></pre>
+<p>填上！搞定！</p>
+<p>非常非常简单的2api，不过算是这辈子第一次2api！</p>
       </div>
       <footer class="post__end">
         <span class="post__end-mark"></span>
