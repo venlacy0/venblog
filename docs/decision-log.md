@@ -14,7 +14,7 @@
 - 方块沿线移动：用 `getPointAtLength()` 按路径长度取点，并随滚动更新位置
 - 可访问性：支持 `prefers-reduced-motion`，减少动态效果
 - 视觉约束：线条贯穿全宽，去掉两端圆点装饰
-- 内容组织：博文使用 `posts/*.md`，通过 `npm run build` 生成同名 `posts/*.html`（支持 KaTeX 数学公式）
+- 内容组织：博文使用 `posts/*.md`，通过 `npm run build` 生成 `out/*.html`（支持 KaTeX 数学公式）
 
 ## 风险与约束
 

@@ -145,7 +145,7 @@ tags: 技术, 随笔
 正文内容...
 ```
 
-3. 运行 `npm run build`，文章会编译为同名 `.html` 文件，首页自动更新
+3. 运行 `npm run build`，文章会编译到 `out/*.html`，首页 `index.html` 自动更新
 
 ## 项目结构
 
@@ -161,7 +161,8 @@ tags: 技术, 随笔
 ├── scripts/
 │   ├── build.mjs        # 构建脚本（Markdown → HTML）
 │   └── serve.mjs        # 开发服务器
-├── posts/               # 博文源文件（.md）及编译产物（.html）
+├── posts/               # 博文源文件（仅 .md）
+├── out/                 # 博文构建产物（.html）
 ├── vendor/katex/        # KaTeX 资源（构建时生成）
 └── index.html           # 首页（构建时生成）
 ```

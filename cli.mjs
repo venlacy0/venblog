@@ -61,7 +61,7 @@ program
         return;
       }
       for (const p of posts) {
-        log.dim(`  ${p.slug}.md → ${p.slug}.html`);
+        log.dim(`  posts/${p.slug}.md → out/${p.slug}.html`);
       }
       log.success(`构建完成：${posts.length} 篇博文，${Math.round(duration)}ms`);
     } catch (err) {

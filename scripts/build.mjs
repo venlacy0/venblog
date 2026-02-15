@@ -232,6 +232,7 @@ async function loadSiteConfig(rootDir) {
 
 /* 构建时间戳，用于缓存破坏 */
 const CACHE_VER = Date.now().toString(36);
+const POSTS_OUT_DIR = "out";
 
 function renderPostPage({ title, date, tags, readingTime, contentHtml, siteConfig }) {
   const siteCfg = siteConfig.site;
@@ -337,7 +338,7 @@ function renderIndexPage(posts, siteConfig) {
 
     const cards = posts
       .map((p) => {
-        const href = `posts/${encodeURIComponent(p.slug)}.html`;
+        const href = `${POSTS_OUT_DIR}/${encodeURIComponent(p.slug)}.html`;
         const dateFmt = formatDateShort(p.date);
         const normalizedTags = normalizeTags(p.tags);
         for (const tag of normalizedTags) {
@@ -494,7 +495,11 @@ async function copyKatexAssets(rootDir) {
 export async function build(rootDir) {
   const start = performance.now();
   const postsDir = path.join(rootDir, "posts");
+  const postsOutDir = path.join(rootDir, POSTS_OUT_DIR);
   const siteConfig = await loadSiteConfig(rootDir);
+
+  await fs.rm(postsOutDir, { recursive: true, force: true });
+  await fs.mkdir(postsOutDir, { recursive: true });
 
   await copyKatexAssets(rootDir);
 
@@ -507,6 +512,14 @@ export async function build(rootDir) {
     .use(rehypeStringify);
 
   const entries = await fs.readdir(postsDir, { withFileTypes: true });
+
+  // 清理旧版本遗留的 posts/*.html，避免和 .md 混放
+  for (const entry of entries) {
+    if (entry.isFile() && entry.name.toLowerCase().endsWith(".html")) {
+      await fs.unlink(path.join(postsDir, entry.name));
+    }
+  }
+
   const mdFiles = entries
     .filter((d) => d.isFile() && d.name.toLowerCase().endsWith(".md"))
     .map((d) => d.name)
@@ -521,7 +534,7 @@ export async function build(rootDir) {
   for (const fileName of mdFiles) {
     const mdAbs = path.join(postsDir, fileName);
     const slug = fileName.replace(/\.md$/i, "");
-    const outAbs = path.join(postsDir, `${slug}.html`);
+    const outAbs = path.join(postsOutDir, `${slug}.html`);
 
     const raw = await fs.readFile(mdAbs, "utf8");
     const { meta, body } = parseFrontmatter(raw);
@@ -568,7 +581,7 @@ if (process.argv[1] === thisFile) {
   build(process.cwd())
     .then(({ posts, duration }) => {
       for (const p of posts) {
-        console.log(`Rendered posts/${p.slug}.md -> posts/${p.slug}.html`);
+        console.log(`Rendered posts/${p.slug}.md -> ${POSTS_OUT_DIR}/${p.slug}.html`);
       }
       console.log(`Generated index.html (${posts.length} posts) in ${Math.round(duration)}ms`);
     })
